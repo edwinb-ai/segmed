@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from skimage import io
 
 
+# Algunas pruebas de imágenes
 imagenes_entrenamiento = "dataset/train_images/train-volume.tif"
 etiquetas_entrenamiento = "dataset/train_images/train-labels.tif"
 X, y, imagen_vista = prep.extraer_datos(
