@@ -13,7 +13,7 @@ def vgg16_encoder(input_height=128, input_width=128, pretrained="imagenet"):
     # Considerando que la imagen está en escala de grises
     img_input = Input(shape=(input_height, input_width, 1))
 
-    x = Conv2D(64, (3, 3), activation="relu", padding="same", name="block1_conv1")(
+    x = Conv2D(64, (3, 3), activation="relu", padding="same", name="block1_conv1", data_format="channels_last")(
         img_input
     )
     x = Conv2D(64, (3, 3), activation="relu", padding="same", name="block1_conv2")(x)
@@ -43,7 +43,7 @@ def vgg16_encoder(input_height=128, input_width=128, pretrained="imagenet"):
     x = Conv2D(512, (3, 3), activation="relu", padding="same", name="block5_conv1")(x)
     x = Conv2D(512, (3, 3), activation="relu", padding="same", name="block5_conv2")(x)
     x = Conv2D(512, (3, 3), activation="relu", padding="same", name="block5_conv3")(x)
-    x = MaxPooling2D((2, 2), strides=(2, 2), name="block5_pool")(x)
+    x = MaxPooling2D((2, 2), strides=(2, 2), name="block5_pool", data_format="channels_last")(x)
     f5 = x
 
     if pretrained == "imagenet":
@@ -68,10 +68,10 @@ def vgg16_unet(n_classes, input_height=128, input_width=128):
     )
     [f1, f2, f3, f4, f5] = levels
 
-    salida = copy.deepcopy(f5)
+    salida = f5
     # Capa que une, la de hasta abajo
     # salida = (ZeroPadding2D((1, 1)))(salida)
-    salida = (Conv2D(512, (3, 3), padding="same"))(salida)
+    salida = (Conv2D(512, (3, 3), padding="valid"))(salida)
     salida = (BatchNormalization())(salida)
     #
     salida = (UpSampling2D((2, 2)))(salida)

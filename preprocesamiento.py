@@ -51,5 +51,9 @@ def imagen_en_partes(x, y, size=(128, 128), num_partes=4):
     y_patches = image.extract_patches_2d(
         y[:, :, 0], patch_size=size, max_patches=num_partes, random_state=0
     )
+    # Reajustar tamaño
+    nuevo_tam = list(x_patches.shape) + [1]
+    x_patches = x_patches.reshape(tuple(nuevo_tam))
+    y_patches = y_patches.reshape(tuple(nuevo_tam))
 
     return x_patches, y_patches

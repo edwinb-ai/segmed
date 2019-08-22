@@ -12,7 +12,7 @@ def indice_jaccard(y_true, y_pred):
 
 
 def ternaus_loss(y_true, y_pred):
-    loss = binary_crossentropy(y_true, y_pred) - K.log(y_true, y_pred)
+    loss = binary_crossentropy(y_true, y_pred) - K.log(indice_jaccard(y_true, y_pred))
 
     return -loss
 
