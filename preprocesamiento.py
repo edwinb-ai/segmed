@@ -47,21 +47,3 @@ def imagen_en_partes(x, y, size=(128, 128), num_partes=4):
     )
 
     return x_patches, y_patches
-
-
-if __name__ == "__main__":
-    imagenes_entrenamiento = "dataset/train_images/train-volume.tif"
-    etiquetas_entrenamiento = "dataset/train_images/train-labels.tif"
-    X, y, imagen_vista = extraer_datos(
-        imagenes_entrenamiento, etiquetas_entrenamiento, show=True
-    )
-    # Extracción de pedazos de imagen
-    x_patches, y_patches = imagen_en_partes(
-        X[imagen_vista], y[imagen_vista], size=(64, 64), num_partes=8
-    )
-    for i, j in zip(x_patches, y_patches):
-        plt.figure()
-        io.imshow(i)
-        plt.figure()
-        io.imshow(j)
-    io.show()
