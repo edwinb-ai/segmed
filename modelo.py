@@ -52,8 +52,8 @@ def vgg16_encoder(input_height=128, input_width=128, pretrained="imagenet"):
     return img_input, [f1, f2, f3, f4, f5]
 
 
-def triple_capa(unidades, tam=(3, 3)):
-    capa = Conv2D(unidades, tam, activation="relu", padding="same")
+def triple_capa(entrada, unidades, tam=(3, 3)):
+    capa = Conv2D(unidades, tam, activation="relu", padding="same")(entrada)
     capa = Conv2D(unidades, tam, activation="relu", padding="same")(capa)
     capa = Conv2D(unidades, tam, activation="relu", padding="same")(capa)
 
@@ -76,37 +76,37 @@ def vgg16_unet(n_classes, input_height=128, input_width=128):
     salida = (UpSampling2D((2, 2)))(salida)
     salida = concatenate([salida, f5], axis=-1)
     # salida = (ZeroPadding2D((1, 1)))(salida)
-    salida = triple_capa(512)(salida)
+    salida = triple_capa(salida, 512)(salida)
     salida = (BatchNormalization())(salida)
 
     salida = (UpSampling2D((2, 2)))(salida)
     salida = concatenate([salida, f4], axis=-1)
     # salida = (ZeroPadding2D((1, 1)))(salida)
-    salida = triple_capa(512)(salida)
+    salida = triple_capa(salida, 512)(salida)
     salida = (BatchNormalization())(salida)
 
     salida = (UpSampling2D((2, 2)))(salida)
     salida = concatenate([salida, f3], axis=-1)
     # salida = (ZeroPadding2D((1, 1)))(salida)
-    salida = triple_capa(256)(salida)
+    salida = triple_capa(salida, 256)(salida)
     salida = (BatchNormalization())(salida)
 
     salida = (UpSampling2D((2, 2)))(salida)
     salida = concatenate([salida, f2], axis=-1)
     # o = (ZeroPadding2D((1, 1)))(o)
-    salida = triple_capa(128)(salida)
+    salida = triple_capa(salida, 128)(salida)
     salida = (BatchNormalization())(salida)
 
     salida = (UpSampling2D((2, 2)))(salida)
     salida = concatenate([salida, f1], axis=-1)
     # o = (ZeroPadding2D((1, 1)))(o)
-    salida = triple_capa(64)(salida)
+    salida = triple_capa(salida, 64)(salida)
     salida = (BatchNormalization())(salida)
 
     salida = Conv2D(n_classes, (3, 3), padding="same")(salida)
     salida = (Activation("sigmoid"))(salida)
-    salida = (Reshape((input_height * input_width, -1)))(salida)
+    # salida = (Reshape((input_height * input_width, -1)))(salida)
 
-    modelo_final = Model(img_input, salida)
+    modelo_final = Model(img_input, salida, name="vgg16_unet")
 
     return modelo_final
