@@ -31,6 +31,12 @@ def extraer_datos(train_path, label_path, rgb=False, show=False):
             io.imshow(i)
         # Devolver el índice de la imagen vista para darle seguimiento
         return X_train, y_train, rand_entero
+    
+    # Convertir y normalizar las imágenes
+    X_train = X_train.astype("float32")
+    y_train = y_train.astype("float32")
+    X_train /= 255
+    y_train /= 255
 
     return X_train, y_train
 
