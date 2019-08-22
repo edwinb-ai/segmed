@@ -29,7 +29,7 @@ def extraer_datos(train_path, label_path, rgb=False, show=False):
         for i in list_imgs:
             plt.figure()
             io.imshow(i)
-        # io.show()
+        # Devolver el índice de la imagen vista para darle seguimiento
         return X_train, y_train, rand_entero
 
     return X_train, y_train
