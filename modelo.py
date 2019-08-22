@@ -3,6 +3,7 @@ from keras.layers import Input, Conv2D, MaxPooling2D, concatenate, Reshape
 from keras.layers import ZeroPadding2D, BatchNormalization, UpSampling2D
 from keras.layers import Activation
 from keras.utils import get_file
+import copy
 
 
 def vgg16_encoder(input_height=128, input_width=128, pretrained="imagenet"):
@@ -67,7 +68,7 @@ def vgg16_unet(n_classes, input_height=128, input_width=128):
     )
     [f1, f2, f3, f4, f5] = levels
 
-    salida = f5
+    salida = copy.deepcopy(f5)
     # Capa que une, la de hasta abajo
     # salida = (ZeroPadding2D((1, 1)))(salida)
     salida = (Conv2D(512, (3, 3), padding="same"))(salida)
@@ -76,31 +77,31 @@ def vgg16_unet(n_classes, input_height=128, input_width=128):
     salida = (UpSampling2D((2, 2)))(salida)
     salida = concatenate([salida, f5], axis=-1)
     # salida = (ZeroPadding2D((1, 1)))(salida)
-    salida = triple_capa(salida, 512)(salida)
+    salida = triple_capa(salida, 512)
     salida = (BatchNormalization())(salida)
 
     salida = (UpSampling2D((2, 2)))(salida)
     salida = concatenate([salida, f4], axis=-1)
     # salida = (ZeroPadding2D((1, 1)))(salida)
-    salida = triple_capa(salida, 512)(salida)
+    salida = triple_capa(salida, 512)
     salida = (BatchNormalization())(salida)
 
     salida = (UpSampling2D((2, 2)))(salida)
     salida = concatenate([salida, f3], axis=-1)
     # salida = (ZeroPadding2D((1, 1)))(salida)
-    salida = triple_capa(salida, 256)(salida)
+    salida = triple_capa(salida, 256)
     salida = (BatchNormalization())(salida)
 
     salida = (UpSampling2D((2, 2)))(salida)
     salida = concatenate([salida, f2], axis=-1)
     # o = (ZeroPadding2D((1, 1)))(o)
-    salida = triple_capa(salida, 128)(salida)
+    salida = triple_capa(salida, 128)
     salida = (BatchNormalization())(salida)
 
     salida = (UpSampling2D((2, 2)))(salida)
     salida = concatenate([salida, f1], axis=-1)
     # o = (ZeroPadding2D((1, 1)))(o)
-    salida = triple_capa(salida, 64)(salida)
+    salida = triple_capa(salida, 64)
     salida = (BatchNormalization())(salida)
 
     salida = Conv2D(n_classes, (3, 3), padding="same")(salida)
