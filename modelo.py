@@ -52,6 +52,14 @@ def vgg16_encoder(input_height=128, input_width=128, pretrained="imagenet"):
     return img_input, [f1, f2, f3, f4, f5]
 
 
+def triple_capa(unidades, tam=(3, 3)):
+    capa = Conv2D(unidades, tam, activation="relu", padding="same")
+    capa = Conv2D(unidades, tam, activation="relu", padding="same")(capa)
+    capa = Conv2D(unidades, tam, activation="relu", padding="same")(capa)
+
+    return capa
+
+
 def vgg16_unet(n_classes, input_height=128, input_width=128):
 
     img_input, levels = vgg16_encoder(
@@ -59,56 +67,46 @@ def vgg16_unet(n_classes, input_height=128, input_width=128):
     )
     [f1, f2, f3, f4, f5] = levels
 
-    o = f5
+    salida = f5
     # Capa que une, la de hasta abajo
-    # o = (ZeroPadding2D((1, 1)))(o)
-    o = (Conv2D(512, (3, 3), padding="same"))(o)
-    o = (BatchNormalization())(o)
-    # 
-    o = (UpSampling2D((2, 2)))(o)
-    o = concatenate([o, f5], axis=-1)
-    # o = (ZeroPadding2D((1, 1)))(o)
-    o = (Conv2D(512, (3, 3), padding="same"))(o)
-    o = (Conv2D(512, (3, 3), padding="same"))(o)
-    o = (Conv2D(512, (3, 3), padding="same"))(o)
-    o = (BatchNormalization())(o)
+    # salida = (ZeroPadding2D((1, 1)))(salida)
+    salida = (Conv2D(512, (3, 3), padding="same"))(salida)
+    salida = (BatchNormalization())(salida)
+    #
+    salida = (UpSampling2D((2, 2)))(salida)
+    salida = concatenate([salida, f5], axis=-1)
+    # salida = (ZeroPadding2D((1, 1)))(salida)
+    salida = triple_capa(512)(salida)
+    salida = (BatchNormalization())(salida)
 
-    o = (UpSampling2D((2, 2)))(o)
-    o = concatenate([o, f4], axis=-1)
+    salida = (UpSampling2D((2, 2)))(salida)
+    salida = concatenate([salida, f4], axis=-1)
+    # salida = (ZeroPadding2D((1, 1)))(salida)
+    salida = triple_capa(512)(salida)
+    salida = (BatchNormalization())(salida)
+
+    salida = (UpSampling2D((2, 2)))(salida)
+    salida = concatenate([salida, f3], axis=-1)
+    # salida = (ZeroPadding2D((1, 1)))(salida)
+    salida = triple_capa(256)(salida)
+    salida = (BatchNormalization())(salida)
+
+    salida = (UpSampling2D((2, 2)))(salida)
+    salida = concatenate([salida, f2], axis=-1)
     # o = (ZeroPadding2D((1, 1)))(o)
-    o = (Conv2D(512, (3, 3), padding="same"))(o)
-    o = (Conv2D(512, (3, 3), padding="same"))(o)
-    o = (Conv2D(512, (3, 3), padding="same"))(o)
-    o = (BatchNormalization())(o)
+    salida = triple_capa(128)(salida)
+    salida = (BatchNormalization())(salida)
 
-    o = (UpSampling2D((2, 2)))(o)
-    o = concatenate([o, f3], axis=-1)
+    salida = (UpSampling2D((2, 2)))(salida)
+    salida = concatenate([salida, f1], axis=-1)
     # o = (ZeroPadding2D((1, 1)))(o)
-    o = (Conv2D(256, (3, 3), padding="same"))(o)
-    o = (Conv2D(256, (3, 3), padding="same"))(o)
-    o = (Conv2D(256, (3, 3), padding="same"))(o)
-    o = (BatchNormalization())(o)
+    salida = triple_capa(64)(salida)
+    salida = (BatchNormalization())(salida)
 
-    o = (UpSampling2D((2, 2)))(o)
-    o = concatenate([o, f2], axis=-1)
-    # o = (ZeroPadding2D((1, 1)))(o)
-    o = (Conv2D(128, (3, 3), padding="same"))(o)
-    o = (Conv2D(128, (3, 3), padding="same"))(o)
-    o = (Conv2D(128, (3, 3), padding="same"))(o)
-    o = (BatchNormalization())(o)
+    salida = Conv2D(n_classes, (3, 3), padding="same")(salida)
+    salida = (Activation("sigmoid"))(salida)
+    salida = (Reshape((input_height * input_width, -1)))(salida)
 
-    o = (UpSampling2D((2, 2)))(o)
-    o = concatenate([o, f1], axis=-1)
-    # o = (ZeroPadding2D((1, 1)))(o)
-    o = (Conv2D(64, (3, 3), padding="same"))(o)
-    o = (Conv2D(64, (3, 3), padding="same"))(o)
-    o = (Conv2D(64, (3, 3), padding="same"))(o)
-    o = (BatchNormalization())(o)
-
-    o = Conv2D(n_classes, (3, 3), padding="same")(o)
-    o = (Activation("sigmoid"))(o)
-    o = (Reshape((input_height * input_width, -1)))(o)
-
-    modelo_final = Model(img_input, o)
+    modelo_final = Model(img_input, salida)
 
     return modelo_final
