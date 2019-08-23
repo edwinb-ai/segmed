@@ -26,7 +26,7 @@ x_patches, y_patches = prep.muchas_imagenes_en_partes(
 # Hacer aumento de datos simple
 transformaciones = dict(
     # randomly rotate images in the range (deg 0 to 180)
-    rotation_range=10.0,
+    rotation_range=50.0,
     # randomly shift images horizontally
     width_shift_range=0.02,
     # randomly shift images vertically
@@ -37,7 +37,7 @@ transformaciones = dict(
     zoom_range=0.2,
     fill_mode="nearest",
     horizontal_flip=True,
-    vertical_flip=False,
+    vertical_flip=True,
     validation_split=0.2
 )
 datagen_x = ImageDataGenerator(**transformaciones)

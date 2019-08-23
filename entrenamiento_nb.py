@@ -1,3 +1,4 @@
+#%%
 from keras.optimizers import SGD
 from keras.callbacks import ModelCheckpoint, ReduceLROnPlateau
 from keras.preprocessing.image import ImageDataGenerator

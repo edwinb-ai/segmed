@@ -1,6 +1,6 @@
 from keras.models import Model
 from keras.layers import Input, Conv2D, MaxPooling2D, concatenate, Reshape
-from keras.layers import ZeroPadding2D, BatchNormalization, UpSampling2D
+from keras.layers import ZeroPadding2D, Dropout, UpSampling2D, BatchNormalization
 from keras.layers import Activation
 from keras.utils import get_file
 import copy
@@ -133,12 +133,12 @@ def unet(input_size=(256, 256, 1), pretrained_weights=False):
     pool3 = MaxPooling2D(pool_size=(2, 2))(conv3)
     conv4 = Conv2D(512, 3, activation="relu", padding="same")(pool3)
     conv4 = Conv2D(512, 3, activation="relu", padding="same")(conv4)
-    drop4 = BatchNormalization()(conv4)
+    drop4 = Dropout(0.5)(conv4)
     pool4 = MaxPooling2D(pool_size=(2, 2))(drop4)
 
     conv5 = Conv2D(1024, 3, activation="relu", padding="same")(pool4)
     conv5 = Conv2D(1024, 3, activation="relu", padding="same")(conv5)
-    drop5 = BatchNormalization()(conv5)
+    drop5 = Dropout(0.5)(conv5)
 
     up6 = Conv2D(512, 2, activation="relu", padding="same")(
         UpSampling2D(size=(2, 2))(drop5)
