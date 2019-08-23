@@ -37,12 +37,19 @@ datagen_x = ImageDataGenerator(
 datagen_x.fit(x_patches)
 
 # Crear callbacks
-guardar_modelo = ModelCheckpoint("vgg16_unet.h5", verbose=1, save_best_only=True)
-reduce_lr = ReduceLROnPlateau(monitor="val_loss", factor=0.1, patience=2)
+guardar_modelo = ModelCheckpoint("unet.h5", verbose=1, save_best_only=True)
+reduce_lr = ReduceLROnPlateau(monitor="val_loss", factor=0.1, patience=1)
 
-# Compilar el modelo para dos clases
-modelo_vgg16_unet = modelo.vgg16_unet(2)
-modelo_vgg16_unet.compile(
+# Compilar el modelo para dos clases, vgg16_unet
+# modelo_vgg16_unet = modelo.vgg16_unet(2)
+# modelo_vgg16_unet.compile(
+#     loss=mets.ternaus_loss,
+#     optimizer=SGD(1e-2, momentum=0.9),
+#     metrics=[mets.indice_jaccard],
+# )
+# U-net
+modelo_unet = modelo.unet(input_size=(128, 128, 1))
+modelo_unet.compile(
     loss=mets.ternaus_loss,
     optimizer=SGD(1e-2, momentum=0.9),
     metrics=[mets.indice_jaccard],
@@ -51,8 +58,6 @@ modelo_vgg16_unet.compile(
 # Algunos hiperparámetros
 epocas = 10
 tam_lote = 2
-
-print(np.ceil(len(x_patches) // tam_lote).astype("int"))
 
 # Entrenar con generadores
 # historia = modelo_vgg16_unet.fit_generator(
@@ -69,7 +74,9 @@ print(np.ceil(len(x_patches) // tam_lote).astype("int"))
 #     callbacks=[guardar_modelo, reduce_lr],
 # )
 
-historia = modelo_vgg16_unet.fit(
+print(modelo_unet.summary())
+
+historia = modelo_unet.fit(
     x_patches,
     y_patches,
     epochs=epocas,

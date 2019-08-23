@@ -40,6 +40,34 @@ def extraer_datos(train_path, label_path, rgb=False, show=False):
 
     return X_train, y_train
 
+def datos_prueba(test_path, rgb=False, show=False):
+    # Definir el camino de las imágenes
+    path_imagenes_prueba = test_path
+    # Importar las imágenes en formato tif
+    X_test = io.imread(path_imagenes_prueba, plugin="tifffile")
+    # Reacomodar el arreglo para que tenga canales de color
+    if rgb:
+        # Se agregan los tres canales
+        nuevo_tam = list(X_train.shape) + [3]
+    else:
+        # Solamente se agrega uno, blanco y negro
+        nuevo_tam = list(X_train.shape) + [1]
+    # Con estos tamaños, reajustar las imágenes
+    X_test = X_test.reshape(tuple(nuevo_tam))
+    # Mostrar una imagen
+    if show:
+        rand_entero = np.random.randint(0, len(X_test))
+        # Mostrar siempre su mapa de segmentación
+        imagen_prueba = X_test[rand_entero, :, :, 0]
+        plt.figure()
+        io.imshow(imagen_prueba)
+    
+    # Convertir y normalizar las imágenes
+    X_test = X_test.astype("float32")
+    X_test /= 255
+
+    return X_test
+
 
 def imagen_en_partes(x, y, size=(128, 128), num_partes=4):
     """
