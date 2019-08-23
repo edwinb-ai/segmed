@@ -1,9 +1,8 @@
 from keras.models import Model
-from keras.layers import Input, Conv2D, MaxPooling2D, concatenate, Reshape
+from keras.layers import Input, Conv2D, MaxPooling2D, Concatenate, Reshape
 from keras.layers import ZeroPadding2D, Dropout, UpSampling2D, BatchNormalization
 from keras.layers import Activation
 from keras.utils import get_file
-import copy
 
 
 def vgg16_encoder(input_height=128, input_width=128, pretrained=False):
@@ -82,31 +81,31 @@ def vgg16_unet(n_classes, input_height=128, input_width=128):
     salida = (BatchNormalization())(salida)
     #
     salida = (UpSampling2D((2, 2)))(salida)
-    salida = concatenate([salida, f5], axis=-1)
+    salida = Concatenate([salida, f5], axis=-1)
     # salida = (ZeroPadding2D((1, 1)))(salida)
     salida = triple_capa(salida, 512)
     salida = (BatchNormalization())(salida)
 
     salida = (UpSampling2D((2, 2)))(salida)
-    salida = concatenate([salida, f4], axis=-1)
+    salida = Concatenate([salida, f4], axis=-1)
     # salida = (ZeroPadding2D((1, 1)))(salida)
     salida = triple_capa(salida, 512)
     salida = (BatchNormalization())(salida)
 
     salida = (UpSampling2D((2, 2)))(salida)
-    salida = concatenate([salida, f3], axis=-1)
+    salida = Concatenate([salida, f3], axis=-1)
     # salida = (ZeroPadding2D((1, 1)))(salida)
     salida = triple_capa(salida, 256)
     salida = (BatchNormalization())(salida)
 
     salida = (UpSampling2D((2, 2)))(salida)
-    salida = concatenate([salida, f2], axis=-1)
+    salida = Concatenate([salida, f2], axis=-1)
     # o = (ZeroPadding2D((1, 1)))(o)
     salida = triple_capa(salida, 128)
     salida = (BatchNormalization())(salida)
 
     salida = (UpSampling2D((2, 2)))(salida)
-    salida = concatenate([salida, f1], axis=-1)
+    salida = Concatenate([salida, f1], axis=-1)
     # o = (ZeroPadding2D((1, 1)))(o)
     salida = triple_capa(salida, 64)
     salida = (BatchNormalization())(salida)
@@ -143,28 +142,28 @@ def unet(input_size=(256, 256, 1), pretrained_weights=False):
     up6 = Conv2D(512, 2, activation="relu", padding="same")(
         UpSampling2D(size=(2, 2))(drop5)
     )
-    merge6 = concatenate([drop4, up6], axis=3)
+    merge6 = Concatenate([drop4, up6], axis=3)
     conv6 = Conv2D(512, 3, activation="relu", padding="same")(merge6)
     conv6 = Conv2D(512, 3, activation="relu", padding="same")(conv6)
 
     up7 = Conv2D(256, 2, activation="relu", padding="same")(
         UpSampling2D(size=(2, 2))(conv6)
     )
-    merge7 = concatenate([conv3, up7], axis=3)
+    merge7 = Concatenate([conv3, up7], axis=3)
     conv7 = Conv2D(256, 3, activation="relu", padding="same")(merge7)
     conv7 = Conv2D(256, 3, activation="relu", padding="same")(conv7)
 
     up8 = Conv2D(128, 2, activation="relu", padding="same")(
         UpSampling2D(size=(2, 2))(conv7)
     )
-    merge8 = concatenate([conv2, up8], axis=3)
+    merge8 = Concatenate([conv2, up8], axis=3)
     conv8 = Conv2D(128, 3, activation="relu", padding="same")(merge8)
     conv8 = Conv2D(128, 3, activation="relu", padding="same")(conv8)
 
     up9 = Conv2D(64, 2, activation="relu", padding="same")(
         UpSampling2D(size=(2, 2))(conv8)
     )
-    merge9 = concatenate([conv1, up9], axis=3)
+    merge9 = Concatenate([conv1, up9], axis=3)
     conv9 = Conv2D(64, 3, activation="relu", padding="same")(merge9)
     conv9 = Conv2D(64, 3, activation="relu", padding="same")(conv9)
     conv9 = Conv2D(2, 3, activation="relu", padding="same")(conv9)
