@@ -48,10 +48,10 @@ def datos_prueba(test_path, rgb=False, show=False):
     # Reacomodar el arreglo para que tenga canales de color
     if rgb:
         # Se agregan los tres canales
-        nuevo_tam = list(X_train.shape) + [3]
+        nuevo_tam = list(X_test.shape) + [3]
     else:
         # Solamente se agrega uno, blanco y negro
-        nuevo_tam = list(X_train.shape) + [1]
+        nuevo_tam = list(X_test.shape) + [1]
     # Con estos tamaños, reajustar las imágenes
     X_test = X_test.reshape(tuple(nuevo_tam))
     # Mostrar una imagen
@@ -85,3 +85,18 @@ def imagen_en_partes(x, y, size=(128, 128), num_partes=4):
     y_patches = y_patches.reshape(tuple(nuevo_tam))
 
     return x_patches, y_patches
+
+def muchas_imagenes_en_partes(x, y, size=(128, 128), num_partes=4):
+    """
+    Asumiendo que las imágenes tienen formato (ancho, alto, canales)
+    """
+    x_patches = image.PatchExtractor(patch_size=size, max_patches=num_partes, random_state=0)
+    x_imgs = x_patches.transform(x)
+    y_patches = image.PatchExtractor(patch_size=size, max_patches=num_partes, random_state=0)
+    y_imgs = y_patches.transform(y)
+    # Reajustar tamaño
+    nuevo_tam = list(x_imgs.shape) + [1]
+    x_imgs = x_imgs.reshape(tuple(nuevo_tam))
+    y_imgs = y_imgs.reshape(tuple(nuevo_tam))
+
+    return x_imgs, y_imgs
