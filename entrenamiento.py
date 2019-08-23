@@ -24,13 +24,16 @@ x_patches, y_patches = prep.muchas_imagenes_en_partes(
 )
 
 # Hacer aumento de datos simple
+# Hacer aumento de datos simple
 transformaciones = dict(
+    zca_whitening=True,
     # randomly rotate images in the range (deg 0 to 180)
     rotation_range=50.0,
     # randomly shift images horizontally
     width_shift_range=0.02,
     # randomly shift images vertically
     height_shift_range=0.02,
+    brightness_range=(0.1, 0.9),
     # set range for random shear
     shear_range=5,
     # set range for random zoom
