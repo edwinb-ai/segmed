@@ -2,7 +2,7 @@ from skimage import io
 from sklearn.feature_extraction import image
 import numpy as np
 import matplotlib.pyplot as plt
-from keras.preprocessing import ImageDataGenerator
+from keras.preprocessing.image import ImageDataGenerator
 
 
 def extraer_datos(train_path, label_path, rgb=False, show=False):
