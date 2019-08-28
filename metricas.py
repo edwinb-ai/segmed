@@ -20,4 +20,4 @@ def ternaus_loss(y_true, y_pred):
 
 def loss_jaccard(y_true, y_pred):
 
-    return -indice_jaccard(y_true, y_pred)
+    return 1.0 - indice_jaccard(y_true, y_pred)

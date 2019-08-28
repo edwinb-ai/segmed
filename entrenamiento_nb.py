@@ -10,7 +10,7 @@ import numpy as np
 
 #%%
 # Algunos hiperparámetros
-epocas = 10
+epocas = 15
 tam_lote = 2
 #%%
 # Extraer las imágenes y normalizar

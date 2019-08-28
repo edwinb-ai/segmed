@@ -2,6 +2,7 @@ from skimage import io
 from sklearn.feature_extraction import image
 import numpy as np
 import matplotlib.pyplot as plt
+from keras.preprocessing import ImageDataGenerator
 
 
 def extraer_datos(train_path, label_path, rgb=False, show=False):
@@ -86,17 +87,43 @@ def imagen_en_partes(x, y, size=(128, 128), num_partes=4):
 
     return x_patches, y_patches
 
-def muchas_imagenes_en_partes(x, y, size=(128, 128), num_partes=4):
+def muchas_imagenes_en_partes(x, y=None, size=(128, 128), num_partes=4):
     """
     Asumiendo que las imágenes tienen formato (ancho, alto, canales)
     """
     x_patches = image.PatchExtractor(patch_size=size, max_patches=num_partes, random_state=0)
     x_imgs = x_patches.transform(x)
-    y_patches = image.PatchExtractor(patch_size=size, max_patches=num_partes, random_state=0)
-    y_imgs = y_patches.transform(y)
+    
     # Reajustar tamaño
     nuevo_tam = list(x_imgs.shape) + [1]
     x_imgs = x_imgs.reshape(tuple(nuevo_tam))
-    y_imgs = y_imgs.reshape(tuple(nuevo_tam))
 
-    return x_imgs, y_imgs
+    if y is not None:
+        y_patches = image.PatchExtractor(patch_size=size, max_patches=num_partes, random_state=0)
+        y_imgs = y_patches.transform(y)
+        y_imgs = y_imgs.reshape(tuple(nuevo_tam))
+
+        return x_imgs, y_imgs
+
+    return x_imgs
+
+def aumentar_imagenes_mascaras(x, y, batch_size=4, transformaciones=None, seed=6):
+    if transformaciones is None:
+        transformaciones = dict(
+        rotation_range=10.0,
+        height_shift_range=0.02,
+        shear_range=5,
+        horizontal_flip=True,
+        vertical_flip=False,
+        fill_mode="constant"
+    )
+
+    datagen_x = ImageDataGenerator(**transformaciones)
+    datagen_x.fit(x, augment=True, seed=seed)
+    datagen_y = ImageDataGenerator(**transformaciones)
+    datagen_y.fit(y, augment=True, seed=seed)
+
+    x_aumentado = datagen_x.flow(x, batch_size=batch_size, seed=seed)
+    y_aumentado = datagen_y.flow(y, batch_size=batch_size, seed=seed)
+
+    return zip(x_aumentado, y_aumentado)
