@@ -117,7 +117,7 @@ dependencies:
   - opencv=4.1.1=py37ha799480_1
   - openh264=1.8.0=hdbcaa40_1000
   - openssl=1.1.1c=h7b6447c_1
-  - pandas
+  - pandas=0.25.1=py37hb3f55d8_0
   - pandoc=2.7.3=0
   - pandocfilters=1.4.2=py_1
   - parso=0.5.1=py_0
@@ -199,4 +199,5 @@ dependencies:
   - zeromq=4.3.2=he1b5a44_2
   - zlib=1.2.11=h7b6447c_3
   - zstd=1.4.0=h3b9ef0a_0
+prefix: /home/edwinb/anaconda3/envs/segnet
 
