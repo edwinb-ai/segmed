@@ -127,9 +127,9 @@ def muchas_imagenes_en_partes(x, y=None, size=(128, 128), num_partes=4, rgb=True
     x_imgs = x_imgs.reshape(tuple(nuevo_tam))
 
     if y is not None:
-        nuevo_tam = list(y_imgs.shape[:-1]) + [1]
         y_patches = image.PatchExtractor(patch_size=size, max_patches=num_partes, random_state=0)
         y_imgs = y_patches.transform(y)
+        nuevo_tam = list(y_imgs.shape[:-1]) + [1]
         y_imgs = y_imgs.reshape(tuple(nuevo_tam))
 
         return x_imgs, y_imgs
