@@ -101,7 +101,7 @@ def datos_prueba(test_path, rgb=False, show=False, tiff=True):
 
     return X_test
 
-def muchas_imagenes_en_partes(x, y=None, size=(128, 128), num_partes=4):
+def muchas_imagenes_en_partes(x, y=None, size=(128, 128), num_partes=4, rgb=True):
     """
     Toma dos arreglos de imágenes, x,y, y las separa en num_partes número de imágenes.
 
@@ -119,10 +119,15 @@ def muchas_imagenes_en_partes(x, y=None, size=(128, 128), num_partes=4):
     x_imgs = x_patches.transform(x)
     
     # Reajustar tamaño
-    nuevo_tam = list(x_imgs.shape) + [1]
+    if rgb:
+        nuevo_tam = list(x_imgs.shape)
+    else:
+        nuevo_tam = list(x_imgs.shape[:-1]) + [1]
+    
     x_imgs = x_imgs.reshape(tuple(nuevo_tam))
 
     if y is not None:
+        nuevo_tam = list(x_imgs.shape[:-1]) + [1]
         y_patches = image.PatchExtractor(patch_size=size, max_patches=num_partes, random_state=0)
         y_imgs = y_patches.transform(y)
         y_imgs = y_imgs.reshape(tuple(nuevo_tam))
