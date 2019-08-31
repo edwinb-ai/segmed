@@ -1,4 +1,4 @@
-from skimage import io
+from skimage import io, color
 from sklearn.feature_extraction import image
 import numpy as np
 import matplotlib.pyplot as plt
@@ -129,8 +129,13 @@ def muchas_imagenes_en_partes(x, y=None, size=(128, 128), num_partes=4, rgb=True
     if y is not None:
         y_patches = image.PatchExtractor(patch_size=size, max_patches=num_partes, random_state=0)
         y_imgs = y_patches.transform(y)
-        nuevo_tam = list(y_imgs.shape[:-1]) + [1]
-        y_imgs = y_imgs.reshape(tuple(nuevo_tam))
+
+        if rgb:
+            y_imgs = np.array([color.rgb2gray(i) for i in y_imgs], dtype=np.float32)
+            y_imgs = y_imgs[:, :, :, None]
+        else:
+            nuevo_tam = list(y_imgs.shape[:-1]) + [1]
+            y_imgs = y_imgs.reshape(tuple(nuevo_tam))
 
         return x_imgs, y_imgs
 
