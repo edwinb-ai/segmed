@@ -12,7 +12,7 @@ def test_unet_is_model():
     assert isinstance(model, tf.keras.Model)
 
 
-def test_unet_classification():
+def test_unet_segmentation():
 
     x_train = skio.ImageCollection(
         "example_dataset/images_prepped_train/*.png"
