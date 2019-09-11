@@ -28,9 +28,9 @@ def test_unet_classification():
     ).concatenate()
 
     x_train = x_train[:, :256, :256, :].astype(np.float32)
-    y_train = y_train[:, :256, :256, tf.newaxis].astype(np.float32)
+    y_train = y_train[:, :256, :256, None].astype(np.float32)
     x_test = x_test[:, :256, :256, :].astype(np.float32)
-    y_test = y_test[:, :256, :256, tf.newaxis].astype(np.float32)
+    y_test = y_test[:, :256, :256, None].astype(np.float32)
 
     x_train /= 255.0
     y_train /= 255.0
