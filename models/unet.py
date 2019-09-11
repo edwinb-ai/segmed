@@ -46,7 +46,7 @@ def unet(input_size=(256, 256, 3)):
     up_6 = K.layers.Conv2D(512, 2, activation="relu", padding="same")(up_6)
 
     # Concatenación entre el cuarto bloque codificador y el primer bloque decodificador
-    merge_6 = K.layers.Concatenate(axis=-1)([drop_4, up_6])
+    merge_6 = K.layers.Concatenate()([conv_4, up_6])
     conv_6 = K.layers.Conv2D(512, 3, activation="relu", padding="same")(merge_6)
     conv_6 = K.layers.Conv2D(512, 3, activation="relu", padding="same")(conv_6)
 
@@ -55,7 +55,7 @@ def unet(input_size=(256, 256, 3)):
     up_7 = K.layers.Conv2D(256, 2, activation="relu", padding="same")(up_7)
 
     # Concatenación entre el tercer bloque codificador y el segundo bloque decodificador
-    merge_7 = K.layers.Concatenate(axis=-1)([conv_3, up_7])
+    merge_7 = K.layers.Concatenate()([conv_3, up_7])
     conv_7 = K.layers.Conv2D(256, 3, activation="relu", padding="same")(merge_7)
     conv_7 = K.layers.Conv2D(256, 3, activation="relu", padding="same")(conv_7)
 
@@ -64,7 +64,7 @@ def unet(input_size=(256, 256, 3)):
     up_8 = K.layers.Conv2D(128, 2, activation="relu", padding="same")(up_8)
 
     # Concatenación entre el segundo bloque codificador y el tercer bloque decodificador
-    merge_8 = K.layers.Concatenate(axis=-1)([conv_2, up_8])
+    merge_8 = K.layers.Concatenate()([conv_2, up_8])
     conv_8 = K.layers.Conv2D(128, 3, activation="relu", padding="same")(merge_8)
     conv_8 = K.layers.Conv2D(128, 3, activation="relu", padding="same")(conv_8)
 
@@ -73,7 +73,7 @@ def unet(input_size=(256, 256, 3)):
     up_9 = K.layers.Conv2D(64, 2, activation="relu", padding="same")(up_9)
 
     # Concatenación entre el primer bloque codificador y el cuarto bloque decodificador
-    merge_9 = K.layers.Concatenate(axis=-1)([conv_1, up_9])
+    merge_9 = K.layers.Concatenate()([conv_1, up_9])
     conv_9 = K.layers.Conv2D(64, 3, activation="relu", padding="same")(merge_9)
     conv_9 = K.layers.Conv2D(64, 3, activation="relu", padding="same")(conv_9)
 
@@ -81,6 +81,6 @@ def unet(input_size=(256, 256, 3)):
     conv_9 = K.layers.Conv2D(2, 3, activation="relu", padding="same")(conv_9)
     conv_10 = K.layers.Conv2D(1, 1, activation="sigmoid")(conv_9)
 
-    model = K.Model(input=entrada, output=conv_10)
+    model = K.Model(inputs=entrada, outputs=conv_10)
 
     return model
