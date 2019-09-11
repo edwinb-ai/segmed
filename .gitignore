@@ -1,5 +1,5 @@
 *.pyc
 *.h5
 .vscode/*
-__pycache__/
-.pytest_cache
+*__pycache__/
+*.pytest_cache
