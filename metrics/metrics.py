@@ -11,17 +11,15 @@ def jaccard_index(y_true, y_pred):
         y_pred: TensorFlow Tensor with the predicted value.
 
     Returns:
-        resultado: Scalar that determines the segmentation error.
+        result: Scalar that determines the intersection over union value.
     """
     y_true_f = tf.reshape(y_true, shape=[-1])
     y_pred_f = tf.reshape(y_pred, shape=[-1])
-    intersection = tf.reduce_sum(y_true_f * y_pred_f)
-    union = tf.reduce_sum(y_true_f) + tf.reduce_sum(y_pred_f)
+    intersection = tf.reduce_sum(y_true_f * y_pred_f, axis=-1)
+    union = tf.reduce_sum(y_true_f, axis=-1) + tf.reduce_sum(y_pred_f, axis=-1)
     result = (intersection + 1.0) / (union - intersection + 1.0)
 
-    result = tf.reduce_mean(result)
-
-    return result
+    return tf.reduce_mean(result)
 
 
 def ternaus_loss(y_true, y_pred):

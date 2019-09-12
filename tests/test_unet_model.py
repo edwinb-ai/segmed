@@ -21,16 +21,16 @@ def test_unet_segmentation():
     """
     # Import some sample images from within the directory
     x_train = skio.ImageCollection(
-        "example_dataset/images_prepped_train/*.png"
+        "tests/example_dataset/images_prepped_train/*.png"
     ).concatenate()
     y_train = skio.ImageCollection(
-        "example_dataset/annotations_prepped_train/*.png"
+        "tests/example_dataset/annotations_prepped_train/*.png"
     ).concatenate()
     x_test = skio.ImageCollection(
-        "example_dataset/images_prepped_test/*.png"
+        "tests/example_dataset/images_prepped_test/*.png"
     ).concatenate()
     y_test = skio.ImageCollection(
-        "example_dataset/annotations_prepped_test/*.png"
+        "tests/example_dataset/annotations_prepped_test/*.png"
     ).concatenate()
     # Crop the images to 256x256 and convert them to float32
     x_train = x_train[:, :256, :256, :].astype(np.float32)
