@@ -1,6 +1,9 @@
 import tensorflow as tf
 
+K = tf.keras.backend
 
+
+@tf.function
 def jaccard_index(y_true, y_pred):
     """
     Jaccard index that evaluates segmentation maps and its effectiveness. If the value is one,
@@ -15,8 +18,8 @@ def jaccard_index(y_true, y_pred):
     """
     y_true_f = tf.reshape(y_true, shape=[-1])
     y_pred_f = tf.reshape(y_pred, shape=[-1])
-    intersection = tf.reduce_sum(y_true_f * y_pred_f, axis=-1)
-    union = tf.reduce_sum(y_true_f, axis=-1) + tf.reduce_sum(y_pred_f, axis=-1)
+    intersection = tf.reduce_sum(y_true_f * y_pred_f)
+    union = tf.reduce_sum(y_true_f) + tf.reduce_sum(y_pred_f)
     result = (intersection + 1.0) / (union - intersection + 1.0)
 
     return tf.reduce_mean(result)
@@ -37,7 +40,7 @@ def ternaus_loss(y_true, y_pred):
     Returns:
         resultado: Scalar that determines the segmentation error.
     """
-    loss = tf.keras.losses.binary_crossentropy(y_true, y_pred) - tf.log(
+    loss = tf.keras.losses.binary_crossentropy(y_true, y_pred) - tf.math.log(
         jaccard_index(y_true, y_pred)
     )
 
@@ -60,7 +63,7 @@ def dice_coef(y_true, y_pred, smooth=1.0):
     y_true_f = tf.reshape(y_true, shape=[-1])
     y_pred_f = tf.reshape(y_pred, shape=[-1])
     intersection = tf.reduce_sum(y_true_f * y_pred_f)
-    numerator = 2.0 * intersection + smooth
+    numerator = (2.0 * intersection) + smooth
     denom = tf.reduce_sum(y_true_f) + tf.reduce_sum(y_pred_f) + smooth
 
     return numerator / denom
