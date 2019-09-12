@@ -1,5 +1,4 @@
-from keras import backend as K
-from keras.losses import binary_crossentropy
+import tensorflow as tf
 
 
 def indice_jaccard(y_true, y_pred):
@@ -14,13 +13,13 @@ def indice_jaccard(y_true, y_pred):
     Regresa:
         resultado: Un valor flotante proveniente de hacer la medición.
     """
-    y_true_f = K.flatten(y_true)
-    y_pred_f = K.flatten(y_pred)
-    interseccion = K.sum(y_true_f * y_pred_f)
-    union = K.sum(y_true_f) + K.sum(y_pred_f)
+    y_true_f = tf.reshape(y_true, shape=[-1])
+    y_pred_f = tf.reshape(y_pred, shape=[-1])
+    interseccion = tf.reduce_sum(y_true_f * y_pred_f)
+    union = tf.reduce_sum(y_true_f) + tf.reduce_sum(y_pred_f)
     resultado = (interseccion + 1.0) / (union - interseccion + 1.0)
 
-    resultado = K.mean(resultado)
+    resultado = tf.reduce_mean(resultado)
 
     return resultado
 
@@ -39,6 +38,8 @@ def ternaus_loss(y_true, y_pred):
     Regresa:
         loss: Un valor flotante proveniente de hacer la medición.
     """
-    loss = binary_crossentropy(y_true, y_pred) - K.log(indice_jaccard(y_true, y_pred))
+    loss = tf.losses.binary_crossentropy(y_true, y_pred) - tf.log(
+        indice_jaccard(y_true, y_pred)
+    )
 
     return loss

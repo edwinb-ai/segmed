@@ -3,84 +3,84 @@ from tensorflow import keras as K
 
 def unet(input_size=(256, 256, 3)):
     """
-    Implementación de U-Net utilizando concatenación en lugar de copiar y cortar
-    los mapas de características.
+    Implementation of the U-Net model, using Concatenation instead of
+    crop and place for the semantic gap.
     
-    Argumentos:
-        input_size: Una tupla de tres elementos que determina el tamaño de la imagen a segmentar.
-        Tiene por default (256, 256, 3), i.e. la imagen es de 256x256, con 3 canales de color.
+    Arguments:
+        input_size: Tuple of three integer values that correspond to the image
+            information, namely (height, width, channels).
 
-    Regresa:
-        model: Una instancia de Model de Keras que sirve para entrenamiento y evaluación.
+    Returns:
+        model: A tf.keras.Model instance
     """
-    entrada = K.Input(input_size)
+    inputs = K.Input(input_size)
 
-    # Primer bloque del codificador
-    conv_1 = K.layers.Conv2D(64, 3, activation="relu", padding="same")(entrada)
+    # First encoder block
+    conv_1 = K.layers.Conv2D(64, 3, activation="relu", padding="same")(inputs)
     conv_1 = K.layers.Conv2D(64, 3, activation="relu", padding="same")(conv_1)
     pool_1 = K.layers.MaxPooling2D(pool_size=(2, 2))(conv_1)
 
-    # Segundo bloque del codificador
+    # Second encoder block
     conv_2 = K.layers.Conv2D(128, 3, activation="relu", padding="same")(pool_1)
     conv_2 = K.layers.Conv2D(128, 3, activation="relu", padding="same")(conv_2)
     pool_2 = K.layers.MaxPooling2D(pool_size=(2, 2))(conv_2)
 
-    # Tercer bloque del codificador
+    # Third encoder block
     conv_3 = K.layers.Conv2D(256, 3, activation="relu", padding="same")(pool_2)
     conv_3 = K.layers.Conv2D(256, 3, activation="relu", padding="same")(conv_3)
     pool_3 = K.layers.MaxPooling2D(pool_size=(2, 2))(conv_3)
 
-    # Cuarto bloque del codificador
+    # Fourth encoder block
     conv_4 = K.layers.Conv2D(512, 3, activation="relu", padding="same")(pool_3)
     conv_4 = K.layers.Conv2D(512, 3, activation="relu", padding="same")(conv_4)
     drop_4 = K.layers.Dropout(0.5)(conv_4)
     pool_4 = K.layers.MaxPooling2D(pool_size=(2, 2))(drop_4)
 
-    # Conexión, la parte de "hasta abajo" de la U
+    # Encoder-decoder conection
     conv_5 = K.layers.Conv2D(1024, 3, activation="relu", padding="same")(pool_4)
     conv_5 = K.layers.Conv2D(1024, 3, activation="relu", padding="same")(conv_5)
     drop_5 = K.layers.Dropout(0.5)(conv_5)
 
-    # Primer bloque del decodificador
+    # First decoder block
     up_6 = K.layers.UpSampling2D(size=(2, 2))(drop_5)
     up_6 = K.layers.Conv2D(512, 2, activation="relu", padding="same")(up_6)
 
-    # Concatenación entre el cuarto bloque codificador y el primer bloque decodificador
+    # Concatenation of first decoder and fourth encoder blocks
     merge_6 = K.layers.Concatenate()([conv_4, up_6])
     conv_6 = K.layers.Conv2D(512, 3, activation="relu", padding="same")(merge_6)
     conv_6 = K.layers.Conv2D(512, 3, activation="relu", padding="same")(conv_6)
 
-    # Segundo bloque del decodificador
+    # Second decoder block
     up_7 = K.layers.UpSampling2D(size=(2, 2))(conv_6)
     up_7 = K.layers.Conv2D(256, 2, activation="relu", padding="same")(up_7)
 
-    # Concatenación entre el tercer bloque codificador y el segundo bloque decodificador
+    # Concatenation of second decoder and third encoder block
     merge_7 = K.layers.Concatenate()([conv_3, up_7])
     conv_7 = K.layers.Conv2D(256, 3, activation="relu", padding="same")(merge_7)
     conv_7 = K.layers.Conv2D(256, 3, activation="relu", padding="same")(conv_7)
 
-    # Tercer bloque del decodificador
+    # Third decoder block
     up_8 = K.layers.UpSampling2D(size=(2, 2))(conv_7)
     up_8 = K.layers.Conv2D(128, 2, activation="relu", padding="same")(up_8)
 
-    # Concatenación entre el segundo bloque codificador y el tercer bloque decodificador
+    # Concatenation of third decoder and second encoder block
     merge_8 = K.layers.Concatenate()([conv_2, up_8])
     conv_8 = K.layers.Conv2D(128, 3, activation="relu", padding="same")(merge_8)
     conv_8 = K.layers.Conv2D(128, 3, activation="relu", padding="same")(conv_8)
 
-    # Tercer bloque del decodificador
+    # Fourth decoder block
     up_9 = K.layers.UpSampling2D(size=(2, 2))(conv_8)
     up_9 = K.layers.Conv2D(64, 2, activation="relu", padding="same")(up_9)
 
-    # Concatenación entre el primer bloque codificador y el cuarto bloque decodificador
+    # Concatenation of fourth decoder and first encoder block
     merge_9 = K.layers.Concatenate()([conv_1, up_9])
     conv_9 = K.layers.Conv2D(64, 3, activation="relu", padding="same")(merge_9)
     conv_9 = K.layers.Conv2D(64, 3, activation="relu", padding="same")(conv_9)
 
-    # Salida de la U-Net
+    # Output of U-Net
     conv_9 = K.layers.Conv2D(2, 3, activation="relu", padding="same")(conv_9)
     conv_10 = K.layers.Conv2D(1, 1, activation="sigmoid")(conv_9)
 
-    model = K.Model(inputs=entrada, outputs=conv_10)
+    model = K.Model(inputs=[inputs], outputs=[conv_10])
 
     return model
