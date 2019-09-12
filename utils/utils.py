@@ -15,46 +15,48 @@ def extract_data(train_path, label_path, rgb=False, show=False):
     Arguments:
         train_path: String with the path for the full images.
         label_path: String with the path for the segmentation maps.
-        rgb: Boolean value to determine if the images 
-        show: Booleano, if true it plots a random image. For visualization and debugging
+        rgb: Boolean value to determine if the images are color or grayscale images.
+        show: Boolean, if true it plots a random image. For visualization and debugging
             purposes only.
 
     Returns:
         X_train, y_train: Numpy arrays of the images and their segmentation maps, normalized.
     """
-    # Definir el camino de las imágenes
-    path_imagenes_entrenamiento = os.path.abspath(train_path)
-    path_etiquetas_entrenamiento = os.path.abspath(label_path)
+    # Define the absolute path for the image directories
+    # path_train_images = train_path
+    # print(path_train_images)
+    # path_train_labels = label_path
+    # print(path_train_labels)
 
-    # Importar las imágenes
-    X_train = io.imread(path_imagenes_entrenamiento)
-    y_train = io.imread(path_etiquetas_entrenamiento)
-    # Reacomodar el arreglo para que tenga canales de color
-    if rgb:
-        # Se agregan los tres canales
-        nuevo_tam = list(X_train.shape) + [3]
-    else:
-        # Solamente se agrega uno, blanco y negro
-        nuevo_tam = list(X_train.shape) + [1]
-    # Con estos tamaños, reajustar las imágenes
-    X_train = X_train.reshape(tuple(nuevo_tam))
-    y_train = y_train.reshape(tuple(nuevo_tam))
-    # Mostrar una imagen
-    if show:
-        rand_entero = np.random.randint(0, len(X_train))
-        # Mostrar siempre su mapa de segmentación
-        list_imgs = [X_train[rand_entero, :, :, 0], y_train[rand_entero, :, :, 0]]
-        for i in list_imgs:
-            plt.figure()
-            io.imshow(i)
-        # Devolver el índice de la imagen vista para darle seguimiento
-        return X_train, y_train, rand_entero
+    # Import images as a collection
+    X_train = io.ImageCollection(train_path).concatenate()
+    y_train = io.ImageCollection(label_path).concatenate()
+    # # Reacomodar el arreglo para que tenga canales de color
+    # if rgb:
+    #     # Se agregan los tres canales
+    #     nuevo_tam = list(X_train.shape) + [3]
+    # else:
+    #     # Solamente se agrega uno, blanco y negro
+    #     nuevo_tam = list(X_train.shape) + [1]
+    # # Con estos tamaños, reajustar las imágenes
+    # X_train = X_train.reshape(tuple(nuevo_tam))
+    # y_train = y_train.reshape(tuple(nuevo_tam))
+    # # Mostrar una imagen
+    # if show:
+    #     rand_entero = np.random.randint(0, len(X_train))
+    #     # Mostrar siempre su mapa de segmentación
+    #     list_imgs = [X_train[rand_entero, :, :, 0], y_train[rand_entero, :, :, 0]]
+    #     for i in list_imgs:
+    #         plt.figure()
+    #         io.imshow(i)
+    #     # Devolver el índice de la imagen vista para darle seguimiento
+    #     return X_train, y_train, rand_entero
     
-    # Convertir y normalizar las imágenes
-    X_train = X_train.astype("float32")
-    y_train = y_train.astype("float32")
-    X_train /= 255
-    y_train /= 255
+    # # Convertir y normalizar las imágenes
+    # X_train = X_train.astype("float32")
+    # y_train = y_train.astype("float32")
+    # X_train /= 255
+    # y_train /= 255
 
     return X_train, y_train
 
