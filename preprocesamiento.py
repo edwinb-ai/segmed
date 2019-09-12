@@ -2,10 +2,11 @@ from skimage import io, color
 from sklearn.feature_extraction import image
 import numpy as np
 import matplotlib.pyplot as plt
-from keras.preprocessing.image import ImageDataGenerator
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+import os
 
 
-def extraer_datos(train_path, label_path, rgb=False, show=False, tiff=True):
+def extraer_datos(train_path, label_path, rgb=False, show=False):
     """
     Extrae los datos de train_path y label_path y los normaliza.
 
@@ -20,16 +21,12 @@ def extraer_datos(train_path, label_path, rgb=False, show=False, tiff=True):
         X_train, y_train: Arreglos de numpy que contienen las imágenes importadas.
     """
     # Definir el camino de las imágenes
-    path_imagenes_entrenamiento = train_path
-    path_etiquetas_entrenamiento = label_path
+    path_imagenes_entrenamiento = os.path.abspath(train_path)
+    path_etiquetas_entrenamiento = os.path.abspath(label_path)
 
-    # Importar las imágenes en formato tif
-    if tiff:
-        X_train = io.imread(path_imagenes_entrenamiento, plugin="tifffile")
-        y_train = io.imread(path_etiquetas_entrenamiento, plugin="tifffile")
-    else:
-        X_train = io.imread(path_imagenes_entrenamiento)
-        y_train = io.imread(path_etiquetas_entrenamiento)
+    # Importar las imágenes
+    X_train = io.imread(path_imagenes_entrenamiento)
+    y_train = io.imread(path_etiquetas_entrenamiento)
     # Reacomodar el arreglo para que tenga canales de color
     if rgb:
         # Se agregan los tres canales
@@ -59,7 +56,7 @@ def extraer_datos(train_path, label_path, rgb=False, show=False, tiff=True):
 
     return X_train, y_train
 
-def datos_prueba(test_path, rgb=False, show=False, tiff=True):
+def datos_prueba(test_path, rgb=False, show=False):
     """
     Importa los datos de test_path y los normaliza.
 
@@ -72,11 +69,7 @@ def datos_prueba(test_path, rgb=False, show=False, tiff=True):
     Regresa:
         X_test: Arreglo de numpy que contiene las imágenes importadas.
     """
-    if tiff:
-        # Importar las imágenes en formato tif
-        X_test = io.imread(test_path, plugin="tifffile")
-    else:
-        X_test = io.imread(test_path)
+    X_test = io.imread(test_path)
 
     # Reacomodar el arreglo para que tenga canales de color
     if rgb:
