@@ -1,7 +1,7 @@
 import tensorflow as tf
 
 
-def indice_jaccard(y_true, y_pred):
+def jaccard_index(y_true, y_pred):
     """
     Métrica de Jaccard (intersección sobre unión, IoU) para determinar
     la eficacia de la segmentación. Es una métrica personalizada para Keras.
@@ -38,8 +38,19 @@ def ternaus_loss(y_true, y_pred):
     Regresa:
         loss: Un valor flotante proveniente de hacer la medición.
     """
-    loss = tf.losses.binary_crossentropy(y_true, y_pred) - tf.log(
-        indice_jaccard(y_true, y_pred)
+    loss = tf.keras.losses.binary_crossentropy(y_true, y_pred) - tf.log(
+        jaccard_index(y_true, y_pred)
     )
 
     return loss
+
+
+def dice_coef(y_true, y_pred, smooth=1.0):
+
+    y_true_f = tf.reshape(y_true, shape=[-1])
+    y_pred_f = tf.reshape(y_pred, shape=[-1])
+    intersection = tf.reduce_sum(y_true_f * y_pred_f)
+    numerator = 2.0 * intersection + smooth
+    denom = tf.reduce_sum(y_true_f) + tf.reduce_sum(y_pred_f) + smooth
+
+    return numerator / denom
