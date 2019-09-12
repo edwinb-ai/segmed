@@ -2,11 +2,11 @@ from skimage import io, color
 from sklearn.feature_extraction import image
 import numpy as np
 import matplotlib.pyplot as plt
-from tensorflow.keras.preprocessing.image import ImageDataGenerator
+import tensorflow as tf
 import os
 
 
-def extract_data(train_path, label_path, rgb=False, show=False):
+def extract_data(train_path, label_path=None, rgb=False):
     """
     Extracts data from train_path and label_path and returns a normalized
     copy of the information. These are expected to be images, and the normalization
@@ -16,87 +16,40 @@ def extract_data(train_path, label_path, rgb=False, show=False):
         train_path: String with the path for the full images.
         label_path: String with the path for the segmentation maps.
         rgb: Boolean value to determine if the images are color or grayscale images.
-        show: Boolean, if true it plots a random image. For visualization and debugging
-            purposes only.
 
     Returns:
         X_train, y_train: Numpy arrays of the images and their segmentation maps, normalized.
     """
-    # Define the absolute path for the image directories
-    # path_train_images = train_path
-    # print(path_train_images)
-    # path_train_labels = label_path
-    # print(path_train_labels)
 
     # Import images as a collection
     X_train = io.ImageCollection(train_path).concatenate()
-    y_train = io.ImageCollection(label_path).concatenate()
-    # # Reacomodar el arreglo para que tenga canales de color
-    # if rgb:
-    #     # Se agregan los tres canales
-    #     nuevo_tam = list(X_train.shape) + [3]
-    # else:
-    #     # Solamente se agrega uno, blanco y negro
-    #     nuevo_tam = list(X_train.shape) + [1]
-    # # Con estos tamaños, reajustar las imágenes
-    # X_train = X_train.reshape(tuple(nuevo_tam))
-    # y_train = y_train.reshape(tuple(nuevo_tam))
-    # # Mostrar una imagen
-    # if show:
-    #     rand_entero = np.random.randint(0, len(X_train))
-    #     # Mostrar siempre su mapa de segmentación
-    #     list_imgs = [X_train[rand_entero, :, :, 0], y_train[rand_entero, :, :, 0]]
-    #     for i in list_imgs:
-    #         plt.figure()
-    #         io.imshow(i)
-    #     # Devolver el índice de la imagen vista para darle seguimiento
-    #     return X_train, y_train, rand_entero
     
-    # # Convertir y normalizar las imágenes
-    # X_train = X_train.astype("float32")
-    # y_train = y_train.astype("float32")
-    # X_train /= 255
-    # y_train /= 255
-
-    return X_train, y_train
-
-def datos_prueba(test_path, rgb=False, show=False):
-    """
-    Importa los datos de test_path y los normaliza.
-
-    Argumentos:
-        test_path: String que tiene el camino completo del directorio donde están las imágenes.
-        rgb: Booleano para reestructurar a forma de las imágenes si son de color o grises.
-        show: Booleano, si es verdadero muestra una imagen aleatoria de las que se están importando.
-        tiff: Booleando, si es verdadero es porque las imágenes están en formato .tif.
-
-    Regresa:
-        X_test: Arreglo de numpy que contiene las imágenes importadas.
-    """
-    X_test = io.imread(test_path)
-
-    # Reacomodar el arreglo para que tenga canales de color
+    # Reshape the array in case it is needed
     if rgb:
-        # Se agregan los tres canales
-        nuevo_tam = list(X_test.shape) + [3]
+        # First check if for whatever reason the array is not RGB already
+        if not X_train.shape[-1] == 3:
+            X_train = X_train[:, :, :, 3]
     else:
-        # Solamente se agrega uno, blanco y negro
-        nuevo_tam = list(X_test.shape) + [1]
-    # Con estos tamaños, reajustar las imágenes
-    X_test = X_test.reshape(tuple(nuevo_tam))
-    # Mostrar una imagen
-    if show:
-        rand_entero = np.random.randint(0, len(X_test))
-        # Mostrar siempre su mapa de segmentación
-        imagen_prueba = X_test[rand_entero, :, :, 0]
-        plt.figure()
-        io.imshow(imagen_prueba)
+        # If not RGB, just reshape to having just one channel, grayscale
+        X_train = X_train[:, :, :, None]
     
-    # Convertir y normalizar las imágenes
-    X_test = X_test.astype("float32")
-    X_test /= 255
+    # Always convert to a valid type and normalize
+    X_train = X_train.astype("float32")
+    X_train /= 255.0
 
-    return X_test
+    # Do the same to the segmentation maps, if passed
+    if not label_path is None:
+        y_train = io.ImageCollection(label_path).concatenate()
+        # The segmentation maps should always be shape (:, :, :, 1)
+        y_train = y_train[:, :, :, None]
+        # Convert to a valid type and normalize
+        y_train = y_train.astype("float32")
+        y_train /= 255.0
+
+        return X_train, y_train
+
+    return X_train
+
 
 def muchas_imagenes_en_partes(x, y=None, size=(128, 128), num_partes=4, rgb=True):
     """
@@ -162,9 +115,9 @@ def aumentar_imagenes_mascaras(x, y, batch_size=4, transformaciones=None, seed=6
         fill_mode="constant"
     )
 
-    datagen_x = ImageDataGenerator(**transformaciones)
+    datagen_x = tf.keras.preprocessing.image.ImageDataGenerator(**transformaciones)
     datagen_x.fit(x, augment=True, seed=seed)
-    datagen_y = ImageDataGenerator(**transformaciones)
+    datagen_y = tf.keras.preprocessing.image.ImageDataGenerator(**transformaciones)
     datagen_y.fit(y, augment=True, seed=seed)
 
     x_aumentado = datagen_x.flow(x, batch_size=batch_size, seed=seed)
