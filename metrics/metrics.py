@@ -1,9 +1,6 @@
 import tensorflow as tf
 
-K = tf.keras.backend
 
-
-@tf.function
 def jaccard_index(y_true, y_pred):
     """
     Jaccard index that evaluates segmentation maps and its effectiveness. If the value is one,
