@@ -49,3 +49,19 @@ class TestUtilsExtractData:
         expected_shape_x = (1, 512, 512, 1)
 
         assert x.shape == expected_shape_x
+
+    def test_normalized(self):
+        """Test that the images are actually normalized within
+        range 0-1. Very important!!!
+        """
+
+        # This is the same image in grayscale
+        x, y = utils.extract_data(
+            "tests/example_dataset/1.png",
+            "tests/example_dataset/1.png",
+            rgb=False,
+        )
+        
+        assert (x >= 0.0).all() and (x <= 1.0).all()
+        assert (y >= 0.0).all() and (y <= 1.0).all()
+
