@@ -36,6 +36,10 @@ class TestUtilsExtractData:
         assert y.shape == expected_shape_y
 
     def test_provide_label_path(self):
+        """Test that it can import just a single batch of images.
+        This is very useful for importing just testing data, where we do
+        not need segmentation maps.
+        """
 
         x = utils.extract_data(
             "tests/example_dataset/1.png",
@@ -45,4 +49,3 @@ class TestUtilsExtractData:
         expected_shape_x = (1, 512, 512, 1)
 
         assert x.shape == expected_shape_x
-        
