@@ -6,19 +6,21 @@ from tensorflow.keras.preprocessing.image import ImageDataGenerator
 import os
 
 
-def extraer_datos(train_path, label_path, rgb=False, show=False):
+def extract_data(train_path, label_path, rgb=False, show=False):
     """
-    Extrae los datos de train_path y label_path y los normaliza.
+    Extracts data from train_path and label_path and returns a normalized
+    copy of the information. These are expected to be images, and the normalization
+    is just converting pixel values to a 0-1 range.
 
-    Argumentos:
-        train_path: String que tiene el camino completo del directorio donde están las imágenes.
-        label_path: String que tiene el camino completo del directorio donde están los mapas de segmentación.
-        rgb: Booleano para reestructurar a forma de las imágenes si son de color o grises.
-        show: Booleano, si es verdadero muestra una imagen aleatoria de las que se están importando.
-        tiff: Booleando, si es verdadero es porque las imágenes están en formato .tif.
+    Arguments:
+        train_path: String with the path for the full images.
+        label_path: String with the path for the segmentation maps.
+        rgb: Boolean value to determine if the images 
+        show: Booleano, if true it plots a random image. For visualization and debugging
+            purposes only.
 
-    Regresa:
-        X_train, y_train: Arreglos de numpy que contienen las imágenes importadas.
+    Returns:
+        X_train, y_train: Numpy arrays of the images and their segmentation maps, normalized.
     """
     # Definir el camino de las imágenes
     path_imagenes_entrenamiento = os.path.abspath(train_path)
