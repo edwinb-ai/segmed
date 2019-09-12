@@ -1,4 +1,4 @@
-# SegNet [![Build Status](https://travis-ci.org/edwinb-ai/segnet.svg?branch=master)](https://travis-ci.org/edwinb-ai/segnet)
+# SegNet [![Build Status](https://travis-ci.org/DCI-NET/segnet.svg?branch=master)](https://travis-ci.org/DCI-NET/segnet)
 
 This is a collection of Deep Learning semantic segmentation models to use for
 specific tasks, namely medical images, cells, histological data and related.
