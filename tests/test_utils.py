@@ -121,4 +121,21 @@ class TestSplitData:
 
 
 class TestAugmentations:
-    pass
+    def test_batch_size(self):
+        """Test that the batch size defined is the actual
+        value obtained.
+        """
+        x, y = utils.extract_data(
+            "tests/example_dataset/images_prepped_train/*.png",
+            "tests/example_dataset/annotations_prepped_train/*.png",
+            rgb=True,
+        )
+        gen = utils.image_mask_augmentation(x, y, batch_size=2)
+        # There are five images and RGB, so there is a total of 30 patches
+        expected_shape_x = (2, 360, 480, 3)
+        expected_shape_y = (2, 360, 480, 1)
+
+        x_gen, y_gen = next(gen)
+
+        assert x_gen.shape == expected_shape_x
+        assert y_gen.shape == expected_shape_y
