@@ -31,7 +31,7 @@ def extract_data(train_path, label_path=None, rgb=False):
             X_train = X_train[:, :, :, 3]
     else:
         # If not RGB, just reshape to having just one channel, grayscale
-        X_train = X_train[:, :, :, None]
+        X_train = X_train[:, :, :, np.newaxis]
     
     # Always convert to a valid type and normalize
     X_train = X_train.astype("float32")
@@ -41,7 +41,7 @@ def extract_data(train_path, label_path=None, rgb=False):
     if not label_path is None:
         y_train = io.ImageCollection(label_path).concatenate()
         # The segmentation maps should always be shape (:, :, :, 1)
-        y_train = y_train[:, :, :, None]
+        y_train = y_train[:, :, :, np.newaxis]
         # Convert to a valid type and normalize
         y_train = y_train.astype("float32")
         y_train /= 255.0
@@ -51,41 +51,33 @@ def extract_data(train_path, label_path=None, rgb=False):
     return X_train
 
 
-def muchas_imagenes_en_partes(x, y=None, size=(128, 128), num_partes=4, rgb=True):
+def split_images(x, y=None, size=(128, 128), num_part=4):
     """
-    Toma dos arreglos de imágenes, x,y, y las separa en num_partes número de imágenes.
+    Takes two arrays of images, x,y, and splits them into num_part number
+    of random patches.
 
-    Argumentos:
-        x: Arreglo de numpy que pertenece a un conjunto de imágenes.
-        y: Arreglo de numpy que pertenece a un conjunto de imágenes.
-            (normalmente los mapas de segmentación de x); es opcional.
-        size: Tupla de dos elementos que contiene el tamaño de las imágenes resultantes.
-        num_partes: Entero que determina en cuántas partes se van a separar las imágenes.
+    Arguments:
+        x: Numpy ndarray with images.
+        y: Numpy ndarray with images.
+        size: Tuple with two integer values, (height, width) of the resulting patches.
+        num_part: Integer value; the number of resulting patches.
 
-    Regresa:
-        x_imgs, y_imgs: Arreglos de numpy del conjunto de imágenes separadas en partes.
+    Returns:
+        x_imgs, y_imgs: Numpy ndarrays with the patches of the original images.
     """
-    x_patches = image.PatchExtractor(patch_size=size, max_patches=num_partes, random_state=0)
+    x_patches = image.PatchExtractor(patch_size=size, max_patches=num_part, random_state=0)
     x_imgs = x_patches.transform(x)
-    
-    # Reajustar tamaño
-    if rgb:
-        nuevo_tam = list(x_imgs.shape)
-    else:
-        nuevo_tam = list(x_imgs.shape[:-1]) + [1]
-    
-    x_imgs = x_imgs.reshape(tuple(nuevo_tam))
+    # Check if number of channels is the same
+    if x.shape[-1] != x_imgs.shape[-1]:
+        x_imgs = x_imgs[:, :, :, int(x.shape[-1])]
 
-    if y is not None:
-        y_patches = image.PatchExtractor(patch_size=size, max_patches=num_partes, random_state=0)
+    if not y is None:
+        y_patches = image.PatchExtractor(patch_size=size, max_patches=num_part, random_state=0)
         y_imgs = y_patches.transform(y)
 
-        if rgb:
-            y_imgs = np.array([color.rgb2gray(i) for i in y_imgs], dtype=np.float32)
-            y_imgs = y_imgs[:, :, :, None]
-        else:
-            nuevo_tam = list(y_imgs.shape[:-1]) + [1]
-            y_imgs = y_imgs.reshape(tuple(nuevo_tam))
+        # Check if number of channels is the same
+        if y.shape[-1] != y_imgs.shape[-1]:
+            y_imgs = y_imgs[:, :, :, np.newaxis]
 
         return x_imgs, y_imgs
 

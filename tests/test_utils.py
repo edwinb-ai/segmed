@@ -65,3 +65,38 @@ class TestUtilsExtractData:
         assert (x >= 0.0).all() and (x <= 1.0).all()
         assert (y >= 0.0).all() and (y <= 1.0).all()
 
+class TestSplitData:
+    def test_correct_shape_rgb(self):
+        """Test that the extracted arrays have the correct
+        shape when they are RGB.
+        """
+        # Both sets of images are RGB
+        x, y = utils.extract_data(
+            "tests/example_dataset/images_prepped_train/*.png",
+            "tests/example_dataset/images_prepped_train/*.png",
+            rgb=True,
+        )
+        x, y = utils.split_images(x, y, size=(60, 80), num_part=6)
+        # There are five images and RGB, so there is a total of 30 patches
+        expected_shape_x = (30, 60, 80, 3)
+        expected_shape_y = (30, 60, 80, 3)
+
+        assert x.shape == expected_shape_x
+        assert y.shape == expected_shape_y
+
+    def test_correct_shape_grayscale(self):
+        """Test that the extracted arrays have the correct
+        shape when they are RGB and grayscale.
+        """
+        # First set is RGB, second one is grayscale
+        x, y = utils.extract_data(
+            "tests/example_dataset/images_prepped_train/*.png",
+            "tests/example_dataset/annotations_prepped_train/*.png",
+            rgb=True,
+        )
+        x, y = utils.split_images(x, y, size=(60, 80), num_part=6)
+        expected_shape_x = (30, 60, 80, 3)
+        expected_shape_y = (30, 60, 80, 1)
+
+        assert x.shape == expected_shape_x
+        assert y.shape == expected_shape_y
