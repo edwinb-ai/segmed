@@ -1,9 +1,7 @@
-from skimage import io, color
+from skimage import io
 from sklearn.feature_extraction import image
 import numpy as np
-import matplotlib.pyplot as plt
-import tensorflow as tf
-import os
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
 
 def extract_data(train_path, label_path=None, rgb=False):
@@ -108,9 +106,9 @@ def image_mask_augmentation(x, y, batch_size=4, transformations=None, seed=6):
         fill_mode="constant"
     )
 
-    datagen_x = tf.keras.preprocessing.image.ImageDataGenerator(**transformations)
+    datagen_x = ImageDataGenerator(**transformations)
     datagen_x.fit(x, augment=True, seed=seed)
-    datagen_y = tf.keras.preprocessing.image.ImageDataGenerator(**transformations)
+    datagen_y = ImageDataGenerator(**transformations)
     datagen_y.fit(y, augment=True, seed=seed)
 
     x_aug = datagen_x.flow(x, batch_size=batch_size, seed=seed)
