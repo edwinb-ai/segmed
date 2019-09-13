@@ -67,15 +67,15 @@ def split_images(x, y=None, size=(128, 128), num_part=4):
     """
     x_patches = image.PatchExtractor(patch_size=size, max_patches=num_part, random_state=0)
     x_imgs = x_patches.transform(x)
-    # Check if number of channels is the same
+    # Check if number of channels is the same for grayscale
     if x.shape[-1] != x_imgs.shape[-1]:
-        x_imgs = x_imgs[:, :, :, int(x.shape[-1])]
+        x_imgs = x_imgs[:, :, :, np.newaxis]
 
     if not y is None:
         y_patches = image.PatchExtractor(patch_size=size, max_patches=num_part, random_state=0)
         y_imgs = y_patches.transform(y)
 
-        # Check if number of channels is the same
+        # Check if number of channels is the same for grayscale
         if y.shape[-1] != y_imgs.shape[-1]:
             y_imgs = y_imgs[:, :, :, np.newaxis]
 
@@ -83,22 +83,23 @@ def split_images(x, y=None, size=(128, 128), num_part=4):
 
     return x_imgs
 
-def aumentar_imagenes_mascaras(x, y, batch_size=4, transformaciones=None, seed=6):
+def image_mask_augmentation(x, y, batch_size=4, transformations=None, seed=6):
     """
-    Toma dos conjuntos de imágenes y las transforma utilizando ImageDataGenerator de Keras.
+    Takes two sets of images and transforms it using ImageDataGenerator from Keras.
 
-    Argumentos:
-        x: Arreglo de numpy que pertenece a un conjunto de imágenes.
-        y: Arreglo de numpy que pertenece a un conjunto de imágenes.
-        batch_size: Entero que determina el número de imágenes a transformar del total.
-        transformaciones: Diccionario con las transformaciones a realizar sobre las imágenes.
-        seed: Entero para fijar el generador de números aleatorios y hacerlo reproducible.
+    Arguments:
+        x: Numpy ndarray with images.
+        y: Numpy ndarray with images.
+        batch_size: Integer value for the number of images to take simultaneously.
+        transformations: Dictionary with the specified transformations to perform, using Keras API.
+        seed: Integer value left fixed for reproducibility purposes.
 
-    Regresa:
-        generador: Un generador de Python con los conjuntos de imágenes transformados.
+    Returns:
+        generator: A Python generator that yields both datasets transformed.
     """
-    if transformaciones is None:
-        transformaciones = dict(
+    # Always perform some basic transformations
+    if transformations is None:
+        transformations = dict(
         rotation_range=10.0,
         height_shift_range=0.02,
         shear_range=5,
@@ -107,14 +108,14 @@ def aumentar_imagenes_mascaras(x, y, batch_size=4, transformaciones=None, seed=6
         fill_mode="constant"
     )
 
-    datagen_x = tf.keras.preprocessing.image.ImageDataGenerator(**transformaciones)
+    datagen_x = tf.keras.preprocessing.image.ImageDataGenerator(**transformations)
     datagen_x.fit(x, augment=True, seed=seed)
-    datagen_y = tf.keras.preprocessing.image.ImageDataGenerator(**transformaciones)
+    datagen_y = tf.keras.preprocessing.image.ImageDataGenerator(**transformations)
     datagen_y.fit(y, augment=True, seed=seed)
 
-    x_aumentado = datagen_x.flow(x, batch_size=batch_size, seed=seed)
-    y_aumentado = datagen_y.flow(y, batch_size=batch_size, seed=seed)
+    x_aug = datagen_x.flow(x, batch_size=batch_size, seed=seed)
+    y_aug = datagen_y.flow(y, batch_size=batch_size, seed=seed)
 
-    generador = zip(x_aumentado, y_aumentado)
+    generator = zip(x_aug, y_aug)
 
-    return generador
+    return generator
