@@ -77,5 +77,7 @@ dependencies:
     - werkzeug==0.15.6
     - wrapt==1.11.2
     - zipp==0.6.0
+    # Install current version of the segnet package
+    - .
 prefix: /home/edwinb/anaconda3/envs/segnet
 
