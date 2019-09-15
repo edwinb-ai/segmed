@@ -1,6 +1,6 @@
 import pytest
 import tensorflow as tf
-from models import multiresunet
+from segnet.models import multiresunet
 import skimage.io as skio
 import numpy as np
 

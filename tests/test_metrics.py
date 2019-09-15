@@ -1,6 +1,6 @@
 import pytest
 import tensorflow as tf
-from metrics import metrics
+from segnet.metrics import metrics
 import skimage.io as skio
 import numpy as np
 

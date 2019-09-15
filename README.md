@@ -16,25 +16,53 @@ Everything is implemented with [TensorFlow 2.0](tensorflow.org), using the newly
 within TensorFlow. This allows for the flexibility and completeness of using the full TensorFlow
 library will still having very good scripting capabilities with Keras.
 
-## Executing the code
+## Dependencies
 
-### Dependencies
+There are several ways to install this package.
 
-This bundle comes with a [conda environment](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html)
-file that **should** be installed in a local machine. If using [Colaboratory](https://colab.research.google.com/notebooks/welcome.ipynb)
-then there is almost _no_ need to use this.
+### Using `pip`
+
+The easiest way to install this package is using `pip` with the following command
+
+    pip install git+https://github.com/DCI-NET/segnet
+
+although it is _highly encouraged_ to do this inside a virtual environment.
+
+If using [Colaboratory](https://colab.research.google.com/notebooks/welcome.ipynb)
+then this is the **preferred** way to use the package.
+
+### Using `pipenv`
+
+[`pipenv`](https://pipenv.readthedocs.io/en/latest/) is the **preferred** way to install this package on a local machine. One just needs
+to run the following:
+
+    # create a new directory for this
+    mkdir segnet_test
+    # install and create a new environment
+    pipenv install git+https://github.com/DCI-NET/segnet#egg=segnet
+    # activate the newly created shell with everything installed
+    pipenv shell
+
+`pipenv` facilitates the use of dependencies and virtual environments, making life easier.
+
+### Using `conda`
+
+This bundle also comes with a
+[conda environment](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html)
+for those that use the [Anaconda distribution](https://www.anaconda.com/distribution/).
 
 For installing the environment make sure you have [conda](https://conda.io/en/latest/) installed, then run the following
 
     conda env create -f segnet_env.yml
 
-this should ask you to confirm the installation, say yes and proceed with the installation
+this should ask you to confirm the installation, say yes and proceed with the installation. After that, activate the newly
+created environment
 
     conda activate segnet
 
-and now you are ready to run the code in this repository.
+and now you are ready to run the code within this repository.
 
-### Unit tests
+## Unit tests
 
 This repository has some unit tests available that should be running constantly in the background,
 and the status of the current code coverage is displayed in the badge above (the one right to the title).
@@ -42,7 +70,7 @@ and the status of the current code coverage is displayed in the badge above (the
 One can manually run the tests, too. Having [pytest](https://pytest.org/en/latest/) (one of the dependencies) 
 installed one just needs to run
 
-    pytest test/
+    pytest
 
 and the test should start running, with a few import and API warnings, but everything should pass.
 
