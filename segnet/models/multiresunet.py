@@ -153,19 +153,27 @@ def MultiResUnet(input_size=(256, 256, 3)):
 
     mresblock5 = MultiResBlock(512, pool_4)
 
-    up_6 = K.layers.Conv2DTranspose(256, (2, 2), strides=(2, 2), padding="same")(mresblock5)
+    up_6 = K.layers.Conv2DTranspose(256, (2, 2), strides=(2, 2), padding="same")(
+        mresblock5
+    )
     up_6 = K.layers.Concatenate()([up_6, mresblock_4])
     mresblock_6 = MultiResBlock(256, up_6)
 
-    up_7 = K.layers.Conv2DTranspose(128, (2, 2), strides=(2, 2), padding="same")(mresblock_6)
+    up_7 = K.layers.Conv2DTranspose(128, (2, 2), strides=(2, 2), padding="same")(
+        mresblock_6
+    )
     up_7 = K.layers.Concatenate()([up_7, mresblock_3])
     mresblock7 = MultiResBlock(128, up_7)
 
-    up_8 = K.layers.Conv2DTranspose(64, (2, 2), strides=(2, 2), padding="same")(mresblock7)
+    up_8 = K.layers.Conv2DTranspose(64, (2, 2), strides=(2, 2), padding="same")(
+        mresblock7
+    )
     up_8 = K.layers.Concatenate()([up_8, mresblock_2])
     mresblock8 = MultiResBlock(64, up_8)
 
-    up_9 = K.layers.Conv2DTranspose(32, (2, 2), strides=(2, 2), padding="same")(mresblock8)
+    up_9 = K.layers.Conv2DTranspose(32, (2, 2), strides=(2, 2), padding="same")(
+        mresblock8
+    )
     up_9 = K.layers.Concatenate()([up_9, mresblock_1])
     mresblock9 = MultiResBlock(32, up_9)
 
@@ -174,9 +182,4 @@ def MultiResUnet(input_size=(256, 256, 3)):
     model = K.Model(inputs=[inputs], outputs=[conv_10])
 
     return model
-
-
-if __name__ == "__main__":
-    model = MultiResUnet(input_size=(128, 128, 3))
-    print(model.summary())
 
