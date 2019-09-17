@@ -118,15 +118,19 @@ def ResPath(filters, input, length=None):
 
 def MultiResUnet(input_size=(256, 256, 3)):
     """
-    MultiResUNet
+    A TensorFlow implementation of the MultiResUNet architecture as defined in the
+    following paper:
+        https://arxiv.org/abs/1902.04049
+    
+    This is a variant of the U-Net, with additional blocks and paths to help mitigate
+    semantic gaps and to obtain better characteristics from the images and maps.
     
     Arguments:
-        height {int} -- height of image 
-        width {int} -- width of image 
-        n_channels {int} -- number of channels in image
+        input_size: Tuple of three integers (height, width, number of channels) that
+            describe the input images.
     
     Returns:
-        [keras model] -- MultiResUNet model
+        model: A Keras model instance.
     """
 
     inputs = K.Input((input_size))
