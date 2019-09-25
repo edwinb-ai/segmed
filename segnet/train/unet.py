@@ -21,8 +21,26 @@ def train_unet(
     Takes two paths for images and segmentation maps and rescales them, splits
     them into training and validation, while saving the best model trained.
 
-    This can be refactored to employ the new tf.data.Dataset API, but for now there
-    is no easy way of doing this with the newly acquired eager mode.
+    Args:
+        img_path (str): The relative path were the images are located.
+        mask_path (str): The relative path were the maps are located.
+        batch_size (int): Size of the batch to be processed.
+        epochs (int): Number of epochs to train the model.
+        steps_per_epoch (int): Total number of steps (batches of samples) to yield 
+            before declaring one epoch finished and starting the next epoch.
+        val_split (float): Value between 0.0 and 1.0 representing the size in percentage
+            to split the dataset.
+        optimizer (`Optimizer`): A Keras optimizer instance with a valid syntax from TensorFlow.
+        monitor (str): Quantity to monitor during training; follow the Keras convention.
+        model_file (str): File to create for the ModelCheckpoint callback from Keras.
+        seed (int): Value to seed the ImageDataGenerator and always retrieve the same batch
+            of pairs of images.
+        show (bool): If true, plots a pair of size `batch_size` to see if the image and its
+            segmentation maps are consistent. For debugging purposes only.
+    Returns:
+        history (`History`): A `History` object. Its `History.history` attribute is a record of
+            training loss values and metrics values at successive epochs, as well as validation
+            loss values and validation metrics values (if applicable).
     """
 
     # Create an instance of the model
@@ -80,9 +98,7 @@ def train_unet(
         subset="validation",
     )
     # Combine both generators, with same issue as before
-    val_generator = (
-        pair for pair in zip(image_generator_val, mask_generator_val)
-    )
+    val_generator = (pair for pair in zip(image_generator_val, mask_generator_val))
 
     # DEBUGGING ONLY, for checking that both image and maps are batched together
     if show:

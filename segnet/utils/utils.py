@@ -11,12 +11,14 @@ def extract_data(train_path, label_path=None, rgb=False):
     is just converting pixel values to a 0-1 range.
 
     Arguments:
-        train_path: String with the path for the full images.
-        label_path: String with the path for the segmentation maps.
-        rgb: Boolean value to determine if the images are color or grayscale images.
+        train_path (str): String with the path for the full images.
+        label_path (str): String with the path for the segmentation maps.
+        rgb (bool): Boolean value to determine if the images are color or grayscale images.
 
     Returns:
-        X_train, y_train: Numpy arrays of the images and their segmentation maps, normalized.
+        X_train, y_train (ndarray): Arrays of the images and their segmentation maps, normalized.
+        X_train (ndarray): Array of the images and their segmentation maps, normalized; when there
+            is no `label_path`.
     """
 
     # Import images as a collection
