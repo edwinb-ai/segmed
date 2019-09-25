@@ -19,7 +19,7 @@ def train_unet(
         import keras as K
 
     # Instanciar el modelo de la UNet
-    model = unet()
+    model = unet(backend=backend)
 
     # Definir las transformaciones, reescalar y el formato
     data_gen_args = {"rescale": 1.0 / 255.0, "dtype": tf.float32}
