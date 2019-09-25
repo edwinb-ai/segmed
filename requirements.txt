@@ -47,12 +47,8 @@ scipy
 seaborn
 segnet
 six
-tb-nightly
-tensorboard
-tensorflow
-tensorflow-estimator
+tensorflow==2.0.0-rc1
 termcolor
-tf-estimator-nightly
 toml
 typed-ast
 wcwidth

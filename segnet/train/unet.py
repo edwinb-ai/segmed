@@ -1,7 +1,6 @@
 from segnet.models import unet
 from segnet.metrics import metrics as mts
 import tensorflow as tf
-import keras as K
 
 
 def train_unet(
@@ -10,40 +9,82 @@ def train_unet(
     batch_size=16,
     epochs=25,
     steps_per_epoch=3125,
+    val_split=0.2,
+    optimizer=tf.keras.optimizers.Adam(),
+    monitor="val_jaccard_index",
     model_file="unet_simple.h5",
+    seed=1,
     show=False,
 ):
 
-    # Instanciar el modelo de la UNet
+    """ A simple utility function for training the U-Net.
+    Takes two paths for images and segmentation maps and rescales them, splits
+    them into training and validation, while saving the best model trained.
+
+    This can be refactored to employ the new tf.data.Dataset API, but for now there
+    is no easy way of doing this with the newly acquired eager mode.
+    """
+
+    # Create an instance of the model
     model = unet()
 
-    # Definir las transformaciones, reescalar y el formato
-    data_gen_args = {"rescale": 1.0 / 255.0, "dtype": tf.float32}
+    # Rescale and convert to float32 both subsets
+    data_gen_args = {
+        "rescale": 1.0 / 255.0,
+        "validation_split": val_split,
+        "dtype": tf.float32,
+    }
 
-    # Crear los generadores de imágenes y máscaras
-    image_datagen = K.preprocessing.image.ImageDataGenerator(**data_gen_args)
-    mask_datagen = K.preprocessing.image.ImageDataGenerator(**data_gen_args)
-
-    # Dejar fija la semilla por ahora
-    seed = 1
-
-    # A partir del directorio agarrar las imágenes y máscaras
-    image_generator = image_datagen.flow_from_directory(
-        img_path, class_mode=None, color_mode="rgb", batch_size=batch_size, seed=seed
+    # Crea the training generators with the defined transformations
+    image_datagen = tf.keras.preprocessing.image.ImageDataGenerator(**data_gen_args)
+    mask_datagen = tf.keras.preprocessing.image.ImageDataGenerator(**data_gen_args)
+    # Take images from directories
+    image_generator_train = image_datagen.flow_from_directory(
+        img_path,
+        class_mode=None,
+        color_mode="rgb",
+        batch_size=batch_size,
+        seed=seed,
+        subset="training",
     )
-    mask_generator = mask_datagen.flow_from_directory(
+    mask_generator_train = mask_datagen.flow_from_directory(
         mask_path,
         class_mode=None,
         color_mode="grayscale",
         batch_size=batch_size,
         seed=seed,
+        subset="training",
+    )
+    # Combine both generators
+    # This need to be a generator of generators, see the following
+    # https://github.com/tensorflow/tensorflow/issues/32357
+    train_generator = (
+        pair for pair in zip(image_generator_train, mask_generator_train)
     )
 
-    # Combinar ambos en un solo generador
-    train_generator = zip(image_generator, mask_generator)
+    # And now the validation generators
+    image_generator_val = image_datagen.flow_from_directory(
+        img_path,
+        class_mode=None,
+        color_mode="rgb",
+        batch_size=batch_size,
+        seed=seed,
+        subset="validation",
+    )
+    mask_generator_val = mask_datagen.flow_from_directory(
+        mask_path,
+        class_mode=None,
+        color_mode="grayscale",
+        batch_size=batch_size,
+        seed=seed,
+        subset="validation",
+    )
+    # Combine both generators, with same issue as before
+    val_generator = (
+        pair for pair in zip(image_generator_val, mask_generator_val)
+    )
 
-    # Cuando no se está seguro, se pueden ver las imágenes de esta forma
-    # SOLAMENTE PARA DEPURACIÓN
+    # DEBUGGING ONLY, for checking that both image and maps are batched together
     if show:
         import matplotlib.pyplot as plt
 
@@ -54,25 +95,27 @@ def train_unet(
             plt.imshow(j[0, ..., 0])
             plt.show()
 
-    # Definir el punto de guardado para cada modelo
-    checkpoint = K.callbacks.ModelCheckpoint(
-        model_file, monitor="jaccard_index", verbose=1, save_best_only=True, mode="max"
+    # Define the checkpoint callback, always maximum mode for custom metrics
+    checkpoint = tf.keras.callbacks.ModelCheckpoint(
+        model_file, monitor=monitor, verbose=1, save_best_only=True, mode="max"
     )
 
-    # Compilar el modelo con las métricas necesarias y un optimizador base
+    # Compile the model with an and custom metrics
     model.compile(
-        loss="binary_crossentropy",
-        optimizer="Adam",
+        loss=tf.keras.losses.binary_crossentropy,
+        optimizer=optimizer,
         metrics=[mts.jaccard_index, mts.dice_coef],
     )
 
-    # Crear la historia del modelo
+    # Create history of model and return it
     history = model.fit_generator(
         train_generator,
         steps_per_epoch=steps_per_epoch,
         epochs=epochs,
         callbacks=[checkpoint],
         verbose=1,
+        validation_data=val_generator,
+        validation_steps=steps_per_epoch,
     )
 
     return history
