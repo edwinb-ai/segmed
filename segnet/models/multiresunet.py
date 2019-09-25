@@ -133,7 +133,7 @@ def MultiResUnet(input_size=(256, 256, 3)):
         model: A Keras model instance.
     """
 
-    inputs = K.Input((input_size))
+    inputs = K.layers.Input((input_size))
 
     mresblock_1 = MultiResBlock(32, inputs)
     pool_1 = K.layers.MaxPooling2D(pool_size=(2, 2))(mresblock_1)
@@ -179,7 +179,7 @@ def MultiResUnet(input_size=(256, 256, 3)):
 
     conv_10 = conv2d(mresblock9, 1, (1, 1), activation="sigmoid")
 
-    model = K.Model(inputs=[inputs], outputs=[conv_10])
+    model = K.models.Model(inputs=[inputs], outputs=[conv_10])
 
     return model
 

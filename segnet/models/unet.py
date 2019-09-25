@@ -13,7 +13,9 @@ def unet(input_size=(256, 256, 3)):
     Returns:
         model: A tf.keras.Model instance
     """
-    inputs = K.Input(input_size)
+
+    # Take in the inputs
+    inputs = K.layers.Input(input_size)
 
     # First encoder block
     conv_1 = K.layers.Conv2D(64, 3, activation="relu", padding="same")(inputs)
@@ -81,6 +83,7 @@ def unet(input_size=(256, 256, 3)):
     conv_9 = K.layers.Conv2D(2, 3, activation="relu", padding="same")(conv_9)
     conv_10 = K.layers.Conv2D(1, 1, activation="sigmoid")(conv_9)
 
-    model = K.Model(inputs=[inputs], outputs=[conv_10])
+    model = K.models.Model(inputs=[inputs], outputs=[conv_10])
 
     return model
+
