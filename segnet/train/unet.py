@@ -11,6 +11,7 @@ def train_unet(
     epochs=25,
     steps_per_epoch=3125,
     model_file="unet_simple.h5",
+    show=False,
 ):
 
     # Instanciar el modelo de la UNet
@@ -41,9 +42,21 @@ def train_unet(
     # Combinar ambos en un solo generador
     train_generator = zip(image_generator, mask_generator)
 
+    # Cuando no se está seguro, se pueden ver las imágenes de esta forma
+    # SOLAMENTE PARA DEPURACIÓN
+    if show:
+        import matplotlib.pyplot as plt
+
+        for i, j in train_generator:
+            plt.figure(0)
+            plt.imshow(i[0, ...])
+            plt.figure(1)
+            plt.imshow(j[0, ..., 0])
+            plt.show()
+
     # Definir el punto de guardado para cada modelo
     checkpoint = K.callbacks.ModelCheckpoint(
-        model_file, monitor="acc", verbose=1, save_best_only=True, mode="max"
+        model_file, monitor="jaccard_index", verbose=1, save_best_only=True, mode="max"
     )
 
     # Compilar el modelo con las métricas necesarias y un optimizador base
