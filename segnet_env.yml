@@ -39,9 +39,6 @@ dependencies:
     - importlib-metadata==0.21
     - isort==4.3.21
     - joblib==0.13.2
-    - keras==2.3.0
-    - keras-applications==1.0.8
-    - keras-preprocessing==1.1.0
     - kiwisolver==1.1.0
     - lazy-object-proxy==1.4.2
     - markdown==3.1.1

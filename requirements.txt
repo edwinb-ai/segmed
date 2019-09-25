@@ -16,9 +16,6 @@ imageio
 importlib-metadata
 isort
 joblib
-keras
-keras-applications
-keras-preprocessing
 kiwisolver
 lazy-object-proxy
 markdown
