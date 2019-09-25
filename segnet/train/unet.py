@@ -1,5 +1,6 @@
 from segnet.models import unet
 import segnet.metrics as mts
+import tensorflow as tf
 
 
 def train_unet(
@@ -13,7 +14,6 @@ def train_unet(
 ):
     # Definir el motor de entrenamiento según lo que haya disponible
     if backend is "tf":
-        import tensorflow as tf
         from tensorflow import keras as K
     elif backend is "keras":
         import keras as K
