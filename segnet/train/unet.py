@@ -1,6 +1,7 @@
 from segnet.models import unet
-import segnet.metrics as mts
+from segnet.metrics import metrics as mts
 import tensorflow as tf
+import keras as K
 
 
 def train_unet(
@@ -10,16 +11,10 @@ def train_unet(
     epochs=25,
     steps_per_epoch=3125,
     model_file="unet_simple.h5",
-    backend="tf",
 ):
-    # Definir el motor de entrenamiento según lo que haya disponible
-    if backend is "tf":
-        from tensorflow import keras as K
-    elif backend is "keras":
-        import keras as K
 
     # Instanciar el modelo de la UNet
-    model = unet(backend=backend)
+    model = unet()
 
     # Definir las transformaciones, reescalar y el formato
     data_gen_args = {"rescale": 1.0 / 255.0, "dtype": tf.float32}
@@ -64,6 +59,7 @@ def train_unet(
         steps_per_epoch=steps_per_epoch,
         epochs=epochs,
         callbacks=[checkpoint],
+        verbose=1,
     )
 
     return history

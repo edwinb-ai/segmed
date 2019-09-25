@@ -1,4 +1,7 @@
-def unet(input_size=(256, 256, 3), backend="tf"):
+import keras as K
+
+
+def unet(input_size=(256, 256, 3)):
     """
     Implementation of the U-Net model, using Concatenation instead of
     crop and place for the semantic gap.
@@ -10,11 +13,6 @@ def unet(input_size=(256, 256, 3), backend="tf"):
     Returns:
         model: A tf.keras.Model instance
     """
-    # Define the backend for the model
-    if backend is "tf":
-        from tensorflow import keras as K
-    elif backend is "keras":
-        import keras as K
 
     # Take in the inputs
     inputs = K.layers.Input(input_size)
