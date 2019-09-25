@@ -14,4 +14,4 @@ install:
   - conda activate segnet
 
 script:
-  pytest tests/
+  pytest
