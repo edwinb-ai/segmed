@@ -44,7 +44,7 @@ scipy
 seaborn
 segnet
 six
-tensorflow==2.0.0-rc1
+tensorflow
 termcolor
 toml
 typed-ast
