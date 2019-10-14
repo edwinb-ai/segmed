@@ -35,7 +35,7 @@ then this is the **preferred** way to use the package.
 i.e. this package, using the following commands in a cell within a Colaboratory notebook:
 ```
 !pip install --upgrade pip
-!pip install tensorflow==2.0.0-rc1
+!pip install tensorflow
 !pip install git+https://github.com/DCI-NET/segnet
 ```
 
