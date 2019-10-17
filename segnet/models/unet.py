@@ -8,10 +8,11 @@ def unet(input_size=(256, 256, 3)):
     
     Arguments:
         input_size: Tuple of three integer values that correspond to the image
-            information, namely (height, width, channels).
+            information, namely (height, width, channels). Must always be a multiple
+            of 32, e.g. 256, 512.
 
     Returns:
-        model: A tf.keras.Model instance
+        model: A tf.keras.Model instance.
     """
 
     # Take in the inputs
