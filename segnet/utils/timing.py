@@ -5,9 +5,9 @@ import datetime
 
 from functools import wraps
 from time import time
-from typing import Callable
+from typing import Callable, Any
 
-def time_this(f) -> Callable:
+def time_this(f: Callable) -> Callable:
     """
       Code snippet taken from : https://stackoverflow.com/questions/1622943/timeit-versus-timing-decorator
       Modified to work on Python 3.7
@@ -59,7 +59,7 @@ def time_log(path_to_logfile: str = None) -> Callable:
     if not path_to_logfile:
         path_to_logfile = os.path.join(os.path.realpath('.'), 'time_logs.jsonl')
     
-    def timed(f):
+    def timed(f: Callable):
         @wraps(f)
         def wrap(*args, **kw):
             ts = time()
@@ -83,9 +83,16 @@ def time_log(path_to_logfile: str = None) -> Callable:
     return timed
 ##
 
-def is_jsonable(x):
+def is_jsonable(x: Any) -> bool:
     """
         Verify if object is JSON-serializable.
+        
+        Arguments:
+                    x : Literally any Python object.
+                    
+        Returns:
+                 True : If json.dumps(x) succeeds.
+                False : If json.dumps(x) raises any kind of Exception.
     """
     try:
         json.dumps(x)
