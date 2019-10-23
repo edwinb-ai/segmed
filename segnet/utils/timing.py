@@ -32,6 +32,21 @@ def time_log(path_to_logfile: str = None) -> Callable:
         Logs the time to compute a function.
         Logging is done using the json-lines format : http://jsonlines.org/
         
+        Each log consists of :
+        {
+            "datetimeUTC": (Standard Greenwich time at function call),
+               "function": (Name of the function that was called, given by function.__name__),
+                   "args": (Values of positional arguments, if JSON-serializable
+                           str(type(arg)) for each non-JSON-serializable argument),
+                 "kwargs": (Idem, for keyword arguments),
+                   "time": (Time required to execute the wrapped function, calculated as follows:
+                            ts = time()
+                            result = f(*args, **kw)
+                            te = time()
+                            exec_time = te - ts
+                            )
+        }
+        
         Arguments :
             path_to_logfile : (optional) string containing a valid path to a logfile.
                               If no path is specified, it will generate a default path :
