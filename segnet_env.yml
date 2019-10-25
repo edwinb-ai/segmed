@@ -4,6 +4,7 @@ channels:
 dependencies:
   - pip
   - python=3
+  - matplotlib
   - pip:
     - absl-py
     - appdirs
@@ -26,7 +27,6 @@ dependencies:
     - kiwisolver
     - lazy-object-proxy
     - markdown
-    - matplotlib
     - mccabe
     - more-itertools
     - networkx
