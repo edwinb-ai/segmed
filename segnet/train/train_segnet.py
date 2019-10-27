@@ -1,8 +1,10 @@
+
 from segnet.models import unet
 from segnet.metrics import metrics as mts
+from segnet.utils import timing
 import tensorflow as tf
 
-
+@timing.time_log()
 def train_segnet(
     model,
     img_path,
