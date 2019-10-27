@@ -34,7 +34,7 @@ from sklearn.metrics import jaccard_score as jaccard_index
 
 ##### Custom modules 
 # Timing decorators :
-from timing import time_this
+# from timing import time_this
 
 def convolve(x, filters: int = 1, kernel_size: Tuple[int] = (3, 3), 
              padding: str ="same", strides: Tuple[int] = (1, 1), 
