@@ -3,7 +3,8 @@ from segnet.metrics import metrics as mts
 import tensorflow as tf
 
 
-def train_unet(
+def train_segnet(
+    model,
     img_path,
     mask_path,
     batch_size=16,
@@ -22,6 +23,7 @@ def train_unet(
     them into training and validation, while saving the best model trained.
 
     Args:
+        model (tensorflow.python.keras.engine.training.Model): A keras model instance.
         img_path (str): The relative path were the images are located.
         mask_path (str): The relative path were the maps are located.
         batch_size (int): Size of the batch to be processed.
@@ -43,8 +45,6 @@ def train_unet(
             loss values and validation metrics values (if applicable).
     """
 
-    # Create an instance of the model
-    model = unet()
 
     # Rescale and convert to float32 both subsets
     data_gen_args = {
