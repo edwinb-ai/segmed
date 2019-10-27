@@ -45,10 +45,6 @@ def train_segnet(
             loss values and validation metrics values (if applicable).
     """
 
-    # Old implementation, create an instance of the model :
-    # model = unet()
-    # It was commented out because the model is now
-    # parameter passed to the function.
 
     # Rescale and convert to float32 both subsets
     data_gen_args = {
