@@ -23,7 +23,7 @@ def train_segnet(
     them into training and validation, while saving the best model trained.
 
     Args:
-        model (tensorflow.python.keras.engine.training.Model): A keras model instance.
+        model (tf.keras.Model): A keras model instance.
         img_path (str): The relative path were the images are located.
         mask_path (str): The relative path were the maps are located.
         batch_size (int): Size of the batch to be processed.
