@@ -1,6 +1,6 @@
 import pytest
 import tensorflow as tf
-from segnet.models.unet import Unet
+from segnet.models import Unet
 import skimage.io as skio
 import numpy as np
 
