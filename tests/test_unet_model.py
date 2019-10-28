@@ -1,6 +1,7 @@
 import pytest
 import tensorflow as tf
 from segnet.models import Unet
+from segnet.train import train_segnet
 import skimage.io as skio
 import numpy as np
 
@@ -11,7 +12,7 @@ class TestSimpleUnet:
         and that the layers are valid ones.
         """
 
-        model = Unet((256, 256, 3), variant="simple").model
+        model = Unet((256, 256, 3), variant="simple").collect()
 
         assert isinstance(model, tf.keras.Model)
 
@@ -43,7 +44,7 @@ class TestSimpleUnet:
         x_test /= 255.0
         y_test /= 255.0
         # Create the model and train it, test the results
-        model = Unet(x_train[0].shape, variant="simple").model
+        model = Unet(x_train[0].shape, variant="simple").collect()
         model.compile(
             loss=tf.keras.losses.BinaryCrossentropy(),
             optimizer=tf.keras.optimizers.Adam(),
@@ -60,6 +61,24 @@ class TestSimpleUnet:
 
         assert result[0].shape == y_test[0].shape
 
+    # def test_train_unet_with_util(self):
+    #     """Test that the UNet model can train correctly, and that it
+    #     returns a valid result using the training interface.
+    #     """
+    #     model = Unet(variant="simple")
+    #     result = train_segnet(
+    #         model,
+    #         "tests/example_dataset/",
+    #         "tests/example_dataset/",
+    #         batch_size=1,
+    #         epochs=2,
+    #         val_split=0.0,
+    #         optimizer=tf.keras.optimizers.Adam(),
+    #         monitor="val_jaccard_index",
+    #         model_file="unet_simple.h5",
+    #         seed=1,
+    #     )
+
 
 class TestCustomUnet:
     def test_custom_unet_is_model(self):
@@ -70,9 +89,9 @@ class TestCustomUnet:
             "activation": "relu",
             "padding": "same",
             "dropout": 0.5,
-            "l2_reg": 0.995
+            "l2_reg": 0.995,
         }
-        model = Unet((256, 256, 3), variant="custom", parameters=conv).model
+        model = Unet((256, 256, 3), variant="custom", parameters=conv).collect()
 
         assert isinstance(model, tf.keras.Model)
 
@@ -108,9 +127,9 @@ class TestCustomUnet:
             "activation": "relu",
             "padding": "same",
             "dropout": 0.5,
-            "l2_reg": 0.995
+            "l2_reg": 0.995,
         }
-        model = Unet(x_train[0].shape, variant="custom", parameters=conv).model
+        model = Unet(x_train[0].shape, variant="custom", parameters=conv).collect()
         model.compile(
             loss=tf.keras.losses.BinaryCrossentropy(),
             optimizer=tf.keras.optimizers.Adam(),

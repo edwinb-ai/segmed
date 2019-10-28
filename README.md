@@ -98,7 +98,8 @@ with this repository; some other datasets **cannot** be redistributed as per req
 For completeness, here is a simple example. Assuming you have followed the instructions and everything is installed
 correctly, you can do the following to train a simple U-Net model:
 ```python
-from segnet.train import train_unet
+from segnet.train import train_segnet
+from segnet.models import Unet
 
 # Define some example hyperparameters
 batch_size = 8
@@ -112,8 +113,18 @@ img_path = data_path + "augmented/images/path"
 masks_path = data_path + "augmented/masks/path"
 model_file = "path/to/save/model/unet_model.h5"
 
+# Create a Unet (custom) model with a regularizer and
+# a different value for the dropout
+custom_params = {
+    "activation": "relu",
+    "padding": "same",
+    "dropout": 0.6,
+    "l2_reg": 0.995
+}
+model = Unet(variant="custom", parameters=custom_params)
 # Train the model!
-history = train_unet(
+history = train_segnet(
+    model,
     img_path,
     masks_path,
     batch_size=batch_size,
