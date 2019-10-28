@@ -98,7 +98,7 @@ with this repository; some other datasets **cannot** be redistributed as per req
 For completeness, here is a simple example. Assuming you have followed the instructions and everything is installed
 correctly, you can do the following to train a simple U-Net model:
 ```python
-from segnet.train import train_segnet
+from segnet.train import train_unet
 from segnet.models import Unet
 
 # Define some example hyperparameters
@@ -123,7 +123,7 @@ custom_params = {
 }
 model = Unet(variant="custom", parameters=custom_params)
 # Train the model!
-history = train_segnet(
+history = train_unet(
     model,
     img_path,
     masks_path,
