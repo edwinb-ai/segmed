@@ -1,4 +1,5 @@
 from tensorflow import keras as K
+from warnings import warn
 
 
 def simple_unet(input_size, conv):
@@ -36,16 +37,16 @@ def simple_unet(input_size, conv):
     # Fourth encoder block
     conv_4 = K.layers.Conv2D(512, 3, **conv)(pool_3)
     conv_4 = K.layers.Conv2D(512, 3, **conv)(conv_4)
-    drop_4 = K.layers.Dropout(0.5)(conv_4)
-    pool_4 = K.layers.MaxPooling2D(pool_size=(2, 2))(drop_4)
+    # drop_4 = K.layers.Dropout(0.5)(conv_4)
+    pool_4 = K.layers.MaxPooling2D(pool_size=(2, 2))(conv_4)
 
     # Encoder-decoder conection
     conv_5 = K.layers.Conv2D(1024, 3, **conv)(pool_4)
     conv_5 = K.layers.Conv2D(1024, 3, **conv)(conv_5)
-    drop_5 = K.layers.Dropout(0.5)(conv_5)
+    # drop_5 = K.layers.Dropout(0.5)(conv_5)
 
     # First decoder block
-    up_6 = K.layers.UpSampling2D(size=(2, 2))(drop_5)
+    up_6 = K.layers.UpSampling2D(size=(2, 2))(conv_5)
     up_6 = K.layers.Conv2D(512, 2, **conv)(up_6)
 
     # Concatenation of first decoder and fourth encoder blocks
@@ -84,15 +85,99 @@ def simple_unet(input_size, conv):
     conv_9 = K.layers.Conv2D(2, 3, **conv)(conv_9)
     conv_10 = K.layers.Conv2D(1, 1, activation="sigmoid")(conv_9)
 
-    model = K.models.Model(inputs=[inputs], outputs=[conv_10])
+    model = K.models.Model(inputs=[inputs], outputs=[conv_10], name="unet_simple")
 
     return model
 
 
-def _unet_encoder(x, pool, conv):
-    some_layer = K.layers.Conv2D(**conv)(x)
-    some_layer = K.layers.Conv2D(**conv)(some_layer)
-    some_layer = K.layers.MaxPooling2D(pool_size=pool)(some_layer)
+def _encoder(x, conv, dropout=None, batch_norm=None):
+    """
+    Create an encoder block with dropout, batch normalization, kernel regularatization and
+    more. It basically supports every possible parameter from the Keras API.
+
+    Args:
+        x (keras.Layer): Layer to build upon.
+        conv (dict): All possible arguments from the Keras specification.
+        dropout (float): 
+    """
+    if batch_norm is not None:
+        if dropout is not None:
+            warn("Is it NOT recommended to use Batch Normalization with Dropout")
+
+        conv["use_bias"] = False
+
+        some_layer = K.layers.Conv2D(**conv)(x)
+        some_layer = K.layers.Conv2D(**conv)(some_layer)
+        some_layer = K.layers.BatchNormalization()
+
+    else:
+        some_layer = K.layers.Conv2D(**conv)(x)
+        some_layer = K.layers.Conv2D(**conv)(some_layer)
+
+    if dropout is not None:
+        if dropout <= 0.0:
+            raise ValueError("Dropout must be larger than zero.")
+        some_layer = K.layers.Dropout(dropout)(some_layer)
 
     return some_layer
-   
+
+
+def _concatenate_and_upsample(prev_layer, cat_layer, upsample, conv):
+    some_layer = K.layers.UpSampling2D(size=upsample)(prev_layer)
+    conv["kernel_size"] = 2
+    some_layer = K.layers.Conv2D(**conv)(some_layer)
+
+    merge_layer = K.layers.Concatenate()([cat_layer, some_layer])
+    conv["kernel_size"] = 3
+    output = K.layers.Conv2D(**conv)(merge_layer)
+    output = K.layers.Conv2D(**conv)(output)
+
+    return output
+
+
+def custom_unet(
+    input_size, conv, pool=None, dropout=None, batch_norm=None, up_sample=None
+):
+
+    inputs = K.layers.Input(input_size)
+    encoder_block = inputs
+    encoding_layers = []
+
+    for i in range(4):
+        encoder_block = _encoder(
+            encoder_block, conv, dropout=dropout, batch_norm=batch_norm
+        )
+        #
+        encoding_layers.append(encoder_block)
+        # Add the necessary pooling
+        if pool is None:
+            # Default pooling
+            pool = (2, 2)
+        encoder_block = K.layers.MaxPooling2D(pool_size=pool)(encoder_block)
+        # Update filter size
+        conv["filters"] *= 2
+
+    # Add encoder-decoder block
+    output_layer = _encoder(
+        encoder_block, conv, dropout=dropout, batch_norm=batch_norm
+    )
+
+    for layer in reversed(encoding_layers):
+        # Reduce number of filters
+        conv["filters"] //= 2
+        output_layer = _concatenate_and_upsample(
+            output_layer, layer, up_sample, conv
+        )
+
+    # Output of U-Net
+    output_layer = K.layers.Conv2D(
+        2, 3, activation=conv["activation"], padding=conv["padding"]
+    )(output_layer)
+    output_layer = K.layers.Conv2D(1, 1, activation="sigmoid")(output_layer)
+
+    model = K.models.Model(
+        inputs=[inputs], outputs=[output_layer], name="unet_custom"
+    )
+
+    return model
+
