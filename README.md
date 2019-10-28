@@ -99,6 +99,7 @@ For completeness, here is a simple example. Assuming you have followed the instr
 correctly, you can do the following to train a simple U-Net model:
 ```python
 from segnet.train import train_unet
+from segnet.models import Unet
 
 # Define some example hyperparameters
 batch_size = 8
@@ -112,8 +113,18 @@ img_path = data_path + "augmented/images/path"
 masks_path = data_path + "augmented/masks/path"
 model_file = "path/to/save/model/unet_model.h5"
 
+# Create a Unet (custom) model with a regularizer and
+# batch normalization
+custom_params = {
+    "activation": "relu",
+    "padding": "same",
+    "batch_norm": True,
+    "l2_reg": 0.995
+}
+model = Unet(variant="custom", parameters=custom_params)
 # Train the model!
 history = train_unet(
+    model,
     img_path,
     masks_path,
     batch_size=batch_size,

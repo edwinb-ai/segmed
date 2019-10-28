@@ -1,10 +1,9 @@
-from segnet.models import unet
 from segnet.metrics import metrics as mts
 import tensorflow as tf
 
 
-def train_segnet(
-    model,
+def train_unet(
+    segmodel,
     img_path,
     mask_path,
     batch_size=16,
@@ -111,6 +110,9 @@ def train_segnet(
             plt.imshow(j[0, ..., 0])
             plt.show()
 
+    # Define the input size in the model and build the model
+    segmodel.input_size = next(image_generator_train)[0].shape
+    model = segmodel.collect()
     # Define the checkpoint callback, always maximum mode for custom metrics
     checkpoint = tf.keras.callbacks.ModelCheckpoint(
         model_file, monitor=monitor, verbose=1, save_best_only=True, mode="max"
