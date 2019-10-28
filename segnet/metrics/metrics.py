@@ -6,7 +6,7 @@ def jaccard_index(y_true, y_pred):
     Jaccard index that evaluates segmentation maps and its effectiveness. If the value is one,
     the segmentation map predicted is exact.
 
-    Arguments:
+    Args:
         y_true: TensorFlow Tensor with the ground truth.
         y_pred: TensorFlow Tensor with the predicted value.
 
@@ -23,34 +23,12 @@ def jaccard_index(y_true, y_pred):
     return result
 
 
-def ternaus_loss(y_true, y_pred):
-    """
-    Loss inspired by TernausNet
-    https://arxiv.org/abs/1801.05746
-    
-    A (hopefully) smooth and differentiable combination between binary cross-entropy
-    and the Jaccard index for better segmentation training.
-
-    Arguments:
-        y_true: TensorFlow Tensor with the ground truth.
-        y_pred: TensorFlow Tensor with the predicted value.
-
-    Returns:
-        loss: Scalar that determines the segmentation error.
-    """
-    loss = tf.keras.losses.binary_crossentropy(y_true, y_pred) - tf.math.log(
-        jaccard_index(y_true, y_pred)
-    )
-
-    return loss
-
-
 def dice_coef(y_true, y_pred, smooth=1.0):
     """
     The Sorensen-Dice coefficient is a close relative of the Jaccard index, and it should
     almost always be logged simultaneously.
 
-    Arguments:
+    Args:
         y_true: TensorFlow Tensor with the ground truth.
         y_pred: TensorFlow Tensor with the predicted value.
 
@@ -67,35 +45,109 @@ def dice_coef(y_true, y_pred, smooth=1.0):
 
     return result
 
-def O_Rate(y_true,y_pred):
-  y_t=tf.reshape(y_true,shape=[-1])
-  y_p=tf.reshape(y_pred,shape=[-1])
-  uno=tf.constant(1.0,dtype=tf.float32)
-  y_true_b=tf.round(y_t+0.1)             #Agregamos un pequeño bias para añadir a la membrana en la segmentación
-  y_pred_b=tf.round(y_p+0.1)
-  Dp=tf.reduce_sum(y_true_b*y_pred_b)
-  Qp=tf.reduce_sum(y_true_b*(uno-y_pred_b))
-  Up=tf.reduce_sum(y_pred_b*(uno-y_true_b))
-  return (Qp/(Up+Dp))
 
-def U_Rate(y_true,y_pred):
-  y_t=tf.reshape(y_true,shape=[-1])
-  y_p=tf.reshape(y_pred,shape=[-1])
-  uno=tf.constant(1.0,dtype=tf.float32)
-  y_true_b=tf.round(y_t+0.1)                #Agregamos un pequeño bias para añadir a la membrana en la segmentación
-  y_pred_b=tf.round(y_p+0.1)
-  Dp=tf.reduce_sum(y_true_b*y_pred_b) 
-  Qp=tf.reduce_sum(y_true_b*(uno-y_pred_b))
-  Up=tf.reduce_sum(y_pred_b*(uno-y_true_b))
-  return (Up/(Up+Dp))
+def _static_binarization(x):
+    """Take a TensorFlow Tensor object and statically binarize it, making
+    the assumption that it has values between 0 and 1. If the value is >= 0.5,
+    then an integer 1 is assigned, otherwise, an integer 0 is assigned.
 
-def Err_rate(y_true,y_pred):
-  y_t=tf.reshape(y_true,shape=[-1])
-  y_p=tf.reshape(y_pred,shape=[-1])
-  uno=tf.constant(1.0,dtype=tf.float32)
-  y_true_b=tf.round(y_t+0.1)                #Agregamos un pequeño bias para añadir a la membrana en la segmentación
-  y_pred_b=tf.round(y_p+0.1)
-  Dp=tf.reduce_sum(y_true_b*y_pred_b)
-  Qp=tf.reduce_sum(y_true_b*(uno-y_pred_b))
-  Up=tf.reduce_sum(y_pred_b*(uno-y_true_b))
-  return ((Qp+Up)/Dp)
+    Args:
+        x (tf.Tensor): Tensor to binarize
+
+    Returns:
+        new_x (tf.Tensor): Binarized tensor
+    """
+    new_x = tf.where(x >= 0.5, tf.constant([1]), tf.constant([0]))
+
+    return new_x
+
+
+def _up_dp_qp(x, y):
+    """Obtain under, over and overall error segmentation rates.
+    By binarizing a ground truth and predicted segmentation maps,
+    this function obtains:
+    - Qp, the number of pixels that should
+        be included in the segmentation result but are not
+    - Up, the number of pixels that should be
+        excluded from the segmentation result but actually included
+    - Dp, the number of pixels that should be included in the segmentation result
+        and are also actually included.
+    This implementation leverages logical operations and bitwise invertions for
+    a faster computation of the values.
+
+    Args:
+        x (tf.Tensor): with the ground truth
+        y (tf.Tensor): with the predicted value
+
+    Returns:
+        u_p (tf.Tensor): the calculated value for Up
+        d_p (tf.Tensor): the calculated value for Dp
+        q_p (tf.Tensor): the calculated value for Qp
+    """
+    y_t = tf.reshape(x, shape=[-1])
+    y_p = tf.reshape(y, shape=[-1])
+    y_t = _static_binarization(y_t)
+    y_p = _static_binarization(y_p)
+    d_p = tf.reduce_sum(y_t * y_p)
+    q_p = tf.reduce_sum(y_t * tf.bitwise.invert(y_p))
+    u_p = tf.reduce_sum(y_p * tf.bitwise.invert(y_t))
+
+    return u_p, d_p, q_p
+
+
+def o_rate(y_true, y_pred):
+    """Calculate the over segmentation error, and cast the result
+    to the input type for stability. It is defined as
+    OR = Qp / (Up + Dp)
+
+    Args:
+        y_true (tf.Tensor): with the ground truth.
+        y_pred (tf.Tensor): with the predicted value.
+
+    Returns:
+        result (tf.Tensor): Constant Tensor with the OR value.
+    """
+    u_p, d_p, q_p = _up_dp_qp(y_true, y_pred)
+    result = q_p / (u_p + d_p)
+    result = tf.cast(result, y_true.dtype)
+
+    return result
+
+
+def u_rate(y_true, y_pred):
+    """Calculate the under segmentation error, and cast the result
+    to the input type for stability. It is defined as
+    UR = Up / (Up + Dp)
+
+    Args:
+        y_true (tf.Tensor): with the ground truth.
+        y_pred (tf.Tensor): with the predicted value.
+
+    Returns:
+        result (tf.Tensor): Constant Tensor with the UR value.
+    """
+    u_p, d_p, _ = _up_dp_qp(y_true, y_pred)
+    result = u_p / (u_p + d_p)
+    result = tf.cast(result, y_true.dtype)
+
+    return result
+
+
+def err_rate(y_true, y_pred):
+    """Calculate the overall segmentation error, and cast the result
+    to the input type for stability. It is defined as
+    ER = (Qp + Up) / Dp
+
+    Args:
+        y_true (tf.Tensor): with the ground truth.
+        y_pred (tf.Tensor): with the predicted value.
+
+    Returns:
+        result (tf.Tensor): Constant Tensor with the ER value.
+    """
+    u_p, d_p, q_p = _up_dp_qp(y_true, y_pred)
+    result = (q_p + u_p) / d_p
+    result = tf.cast(result, y_true.dtype)
+
+    return result
+
