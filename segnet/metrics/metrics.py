@@ -128,7 +128,7 @@ def u_rate(y_true, y_pred):
     """
     u_p, d_p, _ = _up_dp_qp(y_true, y_pred)
     result = u_p / (u_p + d_p)
-    result = tf.cast(esult, y_true.dtype)
+    result = tf.cast(result, y_true.dtype)
 
     return result
 
