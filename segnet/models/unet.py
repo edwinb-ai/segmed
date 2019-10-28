@@ -11,6 +11,8 @@ def simple_unet(input_size, conv):
         input_size (Tuple[int, int, int]): (height, width, channels), i.e.
         The information of the image.
         Must always be a multiple of 32, e.g. 256, 512.
+        conv (dict): Keyword parameters from the Keras specification. This dictionary
+            will affect ALL convolutional layers in the network.
 
     Returns:
         model: A tf.keras.Model instance.
@@ -90,7 +92,7 @@ def simple_unet(input_size, conv):
     return model
 
 
-def _encoder(x, conv, dropout=None, batch_norm=None):
+def _encoder(x, conv, dropout=None, batch_norm=False):
     """
     Create an encoder block with dropout, batch normalization, kernel regularatization and
     more. It basically supports every possible parameter from the Keras API.
@@ -98,9 +100,14 @@ def _encoder(x, conv, dropout=None, batch_norm=None):
     Args:
         x (keras.Layer): Layer to build upon.
         conv (dict): All possible arguments from the Keras specification.
-        dropout (float): 
+        dropout (float): Value for the dropout layer, between 0 and 1.
+        batc_norm (bool): Whether to add batch normalization or not.
+
+    Returns:
+        some_layer (keras.Layer): Output layer with convolutions and additional
+            parameters and layers.
     """
-    if batch_norm is not None:
+    if batch_norm:
         if dropout is not None:
             warn("Is it NOT recommended to use Batch Normalization with Dropout")
 
@@ -123,6 +130,19 @@ def _encoder(x, conv, dropout=None, batch_norm=None):
 
 
 def _concatenate_and_upsample(prev_layer, cat_layer, upsample, conv):
+    """
+    Decoder blocks for the Unet where upsampling and concatenation take part.
+
+    Args:
+        prev_layer (keras.Layer): Previous layer from the network.
+        cat_layer (keras.Layer): The concatenation layer that will be merged together
+            with the upsampling one.
+        upsample (Tuple[int, int]): Upsampling factor for rows and columns.
+        conv (dict): All possible arguments from the Keras specification.
+
+    Returns:
+        output (keras.Layer): Result from the upsampling and concatenation.
+    """
     some_layer = K.layers.UpSampling2D(size=upsample)(prev_layer)
     conv["kernel_size"] = 2
     some_layer = K.layers.Conv2D(**conv)(some_layer)
@@ -138,7 +158,23 @@ def _concatenate_and_upsample(prev_layer, cat_layer, upsample, conv):
 def custom_unet(
     input_size, conv, pool=None, dropout=None, batch_norm=None, up_sample=None
 ):
-
+    """
+    Implementation of the U-Net model but with extreme flexibility to add new paramaters
+    like dropout, batch normalization, kernel regularizers and so on.
+    
+    Args:
+        input_size (Tuple[int, int, int]): (height, width, channels), i.e.
+        The information of the image.
+        Must always be a multiple of 32, e.g. 256, 512.
+        conv (dict): Keyword parameters from the Keras specification. This dictionary
+            will affect ALL convolutional layers in the network.
+        pool (Tuple[int, int]): Pooling windows
+        dropout (float): Value for the dropout layer, between 0 and 1.
+        batch_norm (bool): Add batch normalization to every encoder block.
+        up_sample (Tuple[int, int]): Upsampling factor for rows and columns.
+    Returns:
+        model: A tf.keras.Model instance.
+    """
     inputs = K.layers.Input(input_size)
     encoder_block = inputs
     encoding_layers = []
@@ -158,16 +194,12 @@ def custom_unet(
         conv["filters"] *= 2
 
     # Add encoder-decoder block
-    output_layer = _encoder(
-        encoder_block, conv, dropout=dropout, batch_norm=batch_norm
-    )
+    output_layer = _encoder(encoder_block, conv, dropout=dropout, batch_norm=batch_norm)
 
     for layer in reversed(encoding_layers):
         # Reduce number of filters
         conv["filters"] //= 2
-        output_layer = _concatenate_and_upsample(
-            output_layer, layer, up_sample, conv
-        )
+        output_layer = _concatenate_and_upsample(output_layer, layer, up_sample, conv)
 
     # Output of U-Net
     output_layer = K.layers.Conv2D(
@@ -175,9 +207,7 @@ def custom_unet(
     )(output_layer)
     output_layer = K.layers.Conv2D(1, 1, activation="sigmoid")(output_layer)
 
-    model = K.models.Model(
-        inputs=[inputs], outputs=[output_layer], name="unet_custom"
-    )
+    model = K.models.Model(inputs=[inputs], outputs=[output_layer], name="unet_custom")
 
     return model
 
