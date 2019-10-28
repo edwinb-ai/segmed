@@ -14,7 +14,7 @@ except:
 
 setup(
     name="segnet",
-    version="0.4",
+    version="0.5",
     author="Edwin Bedolla",
     author_email="developeredwin@gmail.com",
     packages=find_packages(),

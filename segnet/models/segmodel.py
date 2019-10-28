@@ -18,6 +18,14 @@ class SegmentationModel:
     def model(self):
         return self._seg_model
 
+    # TODO: Add properties for
+    # - filters
+    # - kernel_size
+    # - droput
+    # - batch_nrom
+    # - up_sample
+    
+
     @property
     def input_size(self):
         return self._input_size
@@ -39,11 +47,11 @@ class SegmentationModel:
         self._padding = value
 
     @property
-    def pool_size(self):
+    def pool(self):
         return self._pool
 
-    @pool_size.setter
-    def pool_size(self, value):
+    @pool.setter
+    def pool(self, value):
         self._pool = value
 
     @property
