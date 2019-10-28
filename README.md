@@ -114,11 +114,11 @@ masks_path = data_path + "augmented/masks/path"
 model_file = "path/to/save/model/unet_model.h5"
 
 # Create a Unet (custom) model with a regularizer and
-# a different value for the dropout
+# batch normalization
 custom_params = {
     "activation": "relu",
     "padding": "same",
-    "dropout": 0.6,
+    "batch_norm": True,
     "l2_reg": 0.995
 }
 model = Unet(variant="custom", parameters=custom_params)

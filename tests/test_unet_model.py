@@ -88,7 +88,7 @@ class TestCustomUnet:
         conv = {
             "activation": "relu",
             "padding": "same",
-            "dropout": 0.5,
+            "batch_norm": True,
             "l2_reg": 0.995,
         }
         model = Unet((256, 256, 3), variant="custom", parameters=conv).collect()
@@ -126,7 +126,7 @@ class TestCustomUnet:
         conv = {
             "activation": "relu",
             "padding": "same",
-            "dropout": 0.5,
+            "batch_norm": True,
             "l2_reg": 0.995,
         }
         model = Unet(x_train[0].shape, variant="custom", parameters=conv).collect()
