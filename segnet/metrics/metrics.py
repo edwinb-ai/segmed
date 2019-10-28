@@ -64,11 +64,11 @@ def _static_binarization(x):
 
 def _up_dp_qp(x, y):
     """Obtain under, over and overall error segmentation rates.
-    By binarizing a ground trught and predicted segmentation maps,
+    By binarizing a ground truth and predicted segmentation maps,
     this function obtains:
-    - Qp, the the number of pixels that should
+    - Qp, the number of pixels that should
         be included in the segmentation result but are not
-    - Up,  the number of pixels that should be
+    - Up, the number of pixels that should be
         excluded from the segmentation result but actually included
     - Dp, the number of pixels that should be included in the segmentation result
         and are also actually included.
@@ -76,8 +76,8 @@ def _up_dp_qp(x, y):
     a faster computation of the values.
 
     Args:
-        x (tf.Tensor): with the ground truth.
-        y (tf.Tensor): with the predicted value.
+        x (tf.Tensor): with the ground truth
+        y (tf.Tensor): with the predicted value
 
     Returns:
         u_p (tf.Tensor): the calculated value for Up
