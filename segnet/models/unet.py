@@ -199,6 +199,8 @@ def custom_unet(
     for layer in reversed(encoding_layers):
         # Reduce number of filters
         conv["filters"] //= 2
+        if up_sample is None:
+            up_sample = (2, 2)
         output_layer = _concatenate_and_upsample(output_layer, layer, up_sample, conv)
 
     # Output of U-Net
