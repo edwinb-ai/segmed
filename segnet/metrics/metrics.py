@@ -46,44 +46,41 @@ def dice_coef(y_true, y_pred, smooth=1.0):
     return result
 
 
+def _static_binarization(x):
+    new_x = tf.where(x >= 0.5, tf.constant([1]), tf.constant([0]))
+
+    return new_x
+
+
+def _up_dp_qp(x, y):
+    y_t = tf.reshape(x, shape=[-1])
+    y_p = tf.reshape(y, shape=[-1])
+    y_t = _static_binarization(y_t)
+    y_p = _static_binarization(y_p)
+    d_p = tf.reduce_sum(y_t * y_p)
+    q_p = tf.reduce_sum(y_t * tf.bitwise.invert(y_p))
+    u_p = tf.reduce_sum(y_p * tf.bitwise.invert(y_t))
+
+    return u_p, d_p, q_p
+
+
 def o_rate(y_true, y_pred):
-    y_t = tf.reshape(y_true, shape=[-1])
-    y_p = tf.reshape(y_pred, shape=[-1])
-    uno = tf.constant(1.0, dtype=tf.float32)
-    y_true_b = tf.round(
-        y_t + 0.1
-    )  # Agregamos un pequeño bias para añadir a la membrana en la segmentación
-    y_pred_b = tf.round(y_p + 0.1)
-    Dp = tf.reduce_sum(y_true_b * y_pred_b)
-    Qp = tf.reduce_sum(y_true_b * (uno - y_pred_b))
-    Up = tf.reduce_sum(y_pred_b * (uno - y_true_b))
-    return Qp / (Up + Dp)
+    u_p, d_p, q_p = _up_dp_qp(y_true, y_pred)
+    result = q_p / (u_p + d_p)
+
+    return tf.cast(result, y_true.dtype)
 
 
 def u_rate(y_true, y_pred):
-    y_t = tf.reshape(y_true, shape=[-1])
-    y_p = tf.reshape(y_pred, shape=[-1])
-    uno = tf.constant(1.0, dtype=tf.float32)
-    y_true_b = tf.round(
-        y_t + 0.1
-    )  # Agregamos un pequeño bias para añadir a la membrana en la segmentación
-    y_pred_b = tf.round(y_p + 0.1)
-    Dp = tf.reduce_sum(y_true_b * y_pred_b)
-    Qp = tf.reduce_sum(y_true_b * (uno - y_pred_b))
-    Up = tf.reduce_sum(y_pred_b * (uno - y_true_b))
-    return Up / (Up + Dp)
+    u_p, d_p, _ = _up_dp_qp(y_true, y_pred)
+    result = u_p / (u_p + d_p)
+
+    return tf.cast(result, y_true.dtype)
 
 
 def err_rate(y_true, y_pred):
-    y_t = tf.reshape(y_true, shape=[-1])
-    y_p = tf.reshape(y_pred, shape=[-1])
-    uno = tf.constant(1.0, dtype=tf.float32)
-    y_true_b = tf.round(
-        y_t + 0.1
-    )  # Agregamos un pequeño bias para añadir a la membrana en la segmentación
-    y_pred_b = tf.round(y_p + 0.1)
-    Dp = tf.reduce_sum(y_true_b * y_pred_b)
-    Qp = tf.reduce_sum(y_true_b * (uno - y_pred_b))
-    Up = tf.reduce_sum(y_pred_b * (uno - y_true_b))
-    return (Qp + Up) / Dp
+    u_p, d_p, q_p = _up_dp_qp(y_true, y_pred)
+    result = (q_p + u_p) / d_p
+
+    return tf.cast(result, y_true.dtype)
 
