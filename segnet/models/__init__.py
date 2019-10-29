@@ -32,6 +32,7 @@ class Unet(SegmentationModel):
         keras_parameters=None,
     ):
         """Creates a Unet model with the specified variant.
+
         For the custom version, almost ALL parameters must be specified.
 
         Args:
@@ -85,8 +86,10 @@ class Unet(SegmentationModel):
         self._seg_model = custom_unet(self._input_size, conv, **options)
 
     def collect(self):
-        """Gather all the information from the model, inside and outside,
-        and generate a Keras instance from it. This way the model can be instantiated
+        """Gather all the information from the model, inside and outside.
+
+        Generate a Keras instance from all the information.
+        This way the model can be instantiated
         from the beginning or by updating the attributes individually until you are
         satisfied with the model you have.
 
