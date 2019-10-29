@@ -5,7 +5,7 @@ import datetime
 
 from functools import wraps
 from time import time
-from typing import Callable, Any
+from typing import Callable, Any, Optional
 
 def time_this(f: Callable) -> Callable:
     """
@@ -27,7 +27,7 @@ def time_this(f: Callable) -> Callable:
     return wrap
 ##
 
-def time_log(path_to_logfile: str = None) -> Callable:
+def time_log(path_to_logfile: Optional[str] = None) -> Callable:
     """
         Logs the time to compute a function.
         Logging is done using the json-lines format : http://jsonlines.org/
