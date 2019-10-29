@@ -4,7 +4,7 @@ from segnet.metrics import metrics as mts
 from segnet.utils import timing
 import tensorflow as tf
 
-@timing.time_log()
+@timing.time_log(path_to_logfile="drive/My Drive/DCI-Net/time_logs.jsonl")
 def train_segnet(
     model,
     img_path,
