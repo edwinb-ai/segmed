@@ -18,9 +18,12 @@ def train_segnet(
     show=False,
 ):
 
-    """ A simple utility function for training the U-Net.
+    """A simple utility function for training the any `segnet` model.
+
     Takes two paths for images and segmentation maps and rescales them, splits
     them into training and validation, while saving the best model trained.
+    The paths must comply to the Keras API convention as specified in their
+    documentation.
 
     Args:
         model (tf.keras.Model): A keras model instance.
@@ -39,12 +42,12 @@ def train_segnet(
             of pairs of images.
         show (bool): If true, plots a pair of size `batch_size` to see if the image and its
             segmentation maps are consistent. For debugging purposes only.
+
     Returns:
         history (`History`): A `History` object. Its `History.history` attribute is a record of
             training loss values and metrics values at successive epochs, as well as validation
             loss values and validation metrics values (if applicable).
     """
-
 
     # Rescale and convert to float32 both subsets
     data_gen_args = {

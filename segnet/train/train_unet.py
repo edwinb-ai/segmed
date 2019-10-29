@@ -18,8 +18,11 @@ def train_unet(
 ):
 
     """ A simple utility function for training the U-Net.
+    
     Takes two paths for images and segmentation maps and rescales them, splits
     them into training and validation, while saving the best model trained.
+    The paths must comply to the Keras API convention as specified in their
+    documentation.
 
     Args:
         model (tf.keras.Model): A keras model instance.

@@ -5,12 +5,13 @@ from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
 
 def extract_data(train_path, label_path=None, rgb=False):
-    """
+    """Load images to memory from directories.
+
     Extracts data from train_path and label_path and returns a normalized
     copy of the information. These are expected to be images, and the normalization
     is just converting pixel values to a 0-1 range.
 
-    Arguments:
+    Args:
         train_path (str): String with the path for the full images.
         label_path (str): String with the path for the segmentation maps.
         rgb (bool): Boolean value to determine if the images are color or grayscale images.
@@ -52,11 +53,12 @@ def extract_data(train_path, label_path=None, rgb=False):
 
 
 def split_images(x, y=None, size=(128, 128), num_part=4):
-    """
+    """Split images into smaller images.
+
     Takes two arrays of images, x,y, and splits them into num_part number
     of random patches.
 
-    Arguments:
+    Args:
         x: Numpy ndarray with images.
         y: Numpy ndarray with images.
         size: Tuple with two integer values, (height, width) of the resulting patches.
@@ -84,10 +86,13 @@ def split_images(x, y=None, size=(128, 128), num_part=4):
     return x_imgs
 
 def image_mask_augmentation(x, y, batch_size=4, transformations=None, seed=6):
-    """
-    Takes two sets of images and transforms it using ImageDataGenerator from Keras.
+    """Use Keras to transform images in several ways.
 
-    Arguments:
+    Takes two sets of images and transforms it using ImageDataGenerator from Keras.
+    For more information about the possible transformation, visit the official
+    Keras documentation.
+
+    Args:
         x: Numpy ndarray with images.
         y: Numpy ndarray with images.
         batch_size: Integer value for the number of images to take simultaneously.

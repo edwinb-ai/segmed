@@ -5,7 +5,7 @@ def conv2d(x, filters, shape, padding="same", strides=(1, 1), activation="relu")
     """
     2D Convolutional layers with Batch Normalization
     
-    Arguments:
+    Args:
         x: Keras layer, the input to the feature map
         filters: Int representing the number of filters to use
         shape: Tuple with two integer values (number of rows, number of columns)
@@ -31,11 +31,12 @@ def conv2d(x, filters, shape, padding="same", strides=(1, 1), activation="relu")
 
 
 def MultiResBlock(u_val, input, alpha=1.67):
-    """
-    MultiRes Block, as defined in the paper. Alpha is a parameter that controls
+    """MultiRes Block, as defined in the paper.
+
+    Alpha is a constant value that controls
     the number of parameters in the block.
     
-    Arguments:
+    Args:
         U: Integer value for the number of filters.
         input: A Keras layer.
     
@@ -76,13 +77,13 @@ def MultiResBlock(u_val, input, alpha=1.67):
 
 
 def ResPath(filters, input, length=None):
-    """
-    ResPath, to mitigate the semantic gap in the architecture.
+    """ResPath, to mitigate the semantic gap in the architecture.
+
     This function creates a path with just one combination of residual
     and feature maps, and this can easily be extended with the length
     argument.
     
-    Arguments:
+    Args:
         filters: Integer value corresponding to the number of filters.
         length: Integer value with the length of the path, number of maps.
         input: Keras layer.
@@ -117,7 +118,8 @@ def ResPath(filters, input, length=None):
 
 
 def MultiResUnet(input_size=(256, 256, 3)):
-    """
+    """The MultiResUNet neural network.
+
     A TensorFlow implementation of the MultiResUNet architecture as defined in the
     following paper:
         https://arxiv.org/abs/1902.04049
@@ -125,7 +127,7 @@ def MultiResUnet(input_size=(256, 256, 3)):
     This is a variant of the U-Net, with additional blocks and paths to help mitigate
     semantic gaps and to obtain better characteristics from the images and maps.
     
-    Arguments:
+    Args:
         input_size: Tuple of three integers (height, width, number of channels) that
             describe the input images.
     
