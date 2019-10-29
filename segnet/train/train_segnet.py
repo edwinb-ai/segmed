@@ -18,10 +18,12 @@ def train_segnet(
     show=False,
 ):
 
-    """A simple utility function for training the U-Net.
+    """A simple utility function for training the any `segnet` model.
 
     Takes two paths for images and segmentation maps and rescales them, splits
     them into training and validation, while saving the best model trained.
+    The paths must comply to the Keras API convention as specified in their
+    documentation.
 
     Args:
         model (tf.keras.Model): A keras model instance.
