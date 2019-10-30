@@ -1,58 +1,38 @@
-import pytest
-import tensorflow as tf
+import tensorflow.keras as K
 from segnet.models import multiresunet
-import skimage.io as skio
+from segnet.metrics.metrics import jaccard_index
 import numpy as np
+from . import SimpleDataset
 
 
-def test_unet_is_model():
-    """Test that the model is an actual Keras model,
-    and that the layers are valid ones.
-    """
+class TestMultiResUNet(SimpleDataset):
+    @staticmethod
+    def test_multiresunet_is_model():
+        """Test that the model is an actual Keras model,
+        and that the layers are valid ones.
+        """
 
-    model = multiresunet.MultiResUnet()
+        model = multiresunet.MultiResUnet()
 
-    assert isinstance(model, tf.keras.Model)
+        assert isinstance(model, K.Model)
 
+    def test_multiresunet_segmentation(self):
+        """Test that the MultiResUNet model can train correctly, and that it
+        returns a valid result.
+        """
+        # Import some sample images from within the directory
+        x_train, x_test, y_train, y_test = self._create_dataset()
+        # Create the model and train it, test the results
+        model = multiresunet.MultiResUnet(input_size=(256, 256, 3))
+        model.compile(
+            loss=K.losses.BinaryCrossentropy(),
+            optimizer=K.optimizers.Adam(),
+            metrics=[jaccard_index],
+        )
+        model.fit(
+            x=x_train, y=y_train, batch_size=1, epochs=2, validation_data=(x_test, y_test)
+        )
+        result = model.predict(x_test)
 
-def test_unet_segmentation():
-    """Test that the UNet model can train correctly, and that it
-    returns a valid result.
-    """
-    # Import some sample images from within the directory
-    x_train = skio.ImageCollection(
-        "tests/example_dataset/images_prepped_train/*.png"
-    ).concatenate()
-    y_train = skio.ImageCollection(
-        "tests/example_dataset/annotations_prepped_train/*.png"
-    ).concatenate()
-    x_test = skio.ImageCollection(
-        "tests/example_dataset/images_prepped_test/*.png"
-    ).concatenate()
-    y_test = skio.ImageCollection(
-        "tests/example_dataset/annotations_prepped_test/*.png"
-    ).concatenate()
-    # Crop the images to 256x256 and convert them to float32
-    x_train = x_train[:, :256, :256, :].astype(np.float32)
-    y_train = y_train[:, :256, :256, None].astype(np.float32)
-    x_test = x_test[:, :256, :256, :].astype(np.float32)
-    y_test = y_test[:, :256, :256, None].astype(np.float32)
-    # Normalize the images
-    x_train /= 255.0
-    y_train /= 255.0
-    x_test /= 255.0
-    y_test /= 255.0
-    # Create the model and train it, test the results
-    model = multiresunet.MultiResUnet(input_size=(256, 256, 3))
-    model.compile(
-        loss=tf.keras.losses.BinaryCrossentropy(),
-        optimizer=tf.keras.optimizers.Adam(),
-        metrics=[tf.keras.metrics.Accuracy()],
-    )
-    model.fit(
-        x=x_train, y=y_train, batch_size=1, epochs=2, validation_data=(x_test, y_test)
-    )
-    result = model.predict(x_test)
-
-    assert result[0].shape == y_test[0].shape
+        assert result[0].shape == y_test[0].shape
 
