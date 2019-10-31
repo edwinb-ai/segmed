@@ -20,6 +20,7 @@ def jaccard_index(y_true, y_pred):
     intersection = tf.reduce_sum(y_true_f * y_pred_f)
     union = tf.reduce_sum(y_true_f) + tf.reduce_sum(y_pred_f)
     result = (intersection + 1.0) / (union - intersection + 1.0)
+    result = tf.reduce_mean(result)
     result = tf.cast(result, tf.float32)
 
     return result
@@ -80,7 +81,7 @@ def _up_dp_qp(x, y):
         excluded from the segmentation result but actually included
     - Dp, the number of pixels that should be included in the segmentation result
         and are also actually included.
-    This implementation leverages logical operations and bitwise invertions for
+    This implementation leverages logical operations and invertions for
     a faster computation of the values.
 
     Args:
@@ -117,7 +118,9 @@ def o_rate(y_true, y_pred):
         result: Constant Tensor with the OR value.
     """
     u_p, d_p, q_p = _up_dp_qp(y_true, y_pred)
+    # Add a smoothing factor of 1.0 to prevent division by zero
     result = q_p / (u_p + d_p + 1.0)
+    # Use the number of images as a means of normalizing the result
     num_data = tf.cast(tf.shape(y_true), result.dtype)
     result = tf.cast(result / num_data[0], tf.float32)
 
@@ -140,7 +143,9 @@ def u_rate(y_true, y_pred):
         result: Constant Tensor with the UR value.
     """
     u_p, d_p, _ = _up_dp_qp(y_true, y_pred)
+    # Add a smoothing factor of 1.0 to prevent division by zero
     result = u_p / (u_p + d_p + 1.0)
+    # Use the number of images as a means of normalizing the result
     num_data = tf.cast(tf.shape(y_true), result.dtype)
     result = tf.cast(result / num_data[0], tf.float32)
 
@@ -163,7 +168,9 @@ def err_rate(y_true, y_pred):
         result: Constant Tensor with the ER value.
     """
     u_p, d_p, q_p = _up_dp_qp(y_true, y_pred)
+    # Add a smoothing factor of 1.0 to prevent division by zero
     result = (q_p + u_p) / (d_p + 1.0)
+    # Use the number of images as a means of normalizing the result
     num_data = tf.cast(tf.shape(y_true), result.dtype)
     result = tf.cast(result / num_data[0], tf.float32)
     result = tf.math.abs(result)
