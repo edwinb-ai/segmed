@@ -20,7 +20,7 @@ def jaccard_index(y_true, y_pred):
     intersection = tf.reduce_sum(y_true_f * y_pred_f)
     union = tf.reduce_sum(y_true_f) + tf.reduce_sum(y_pred_f)
     result = (intersection + 1.0) / (union - intersection + 1.0)
-    result = tf.reduce_mean(result)
+    result = tf.cast(result, tf.float32)
 
     return result
 
@@ -63,7 +63,7 @@ def _static_binarization(x):
     Returns:
         new_x: Binarized tensor
     """
-    new_x = tf.where(x >= 0.5, tf.constant([1]), tf.constant([0]))
+    new_x = tf.where(x >= 0.5, 1, 0)
 
     return new_x
 
@@ -117,7 +117,8 @@ def o_rate(y_true, y_pred):
     """
     u_p, d_p, q_p = _up_dp_qp(y_true, y_pred)
     result = q_p / (u_p + d_p)
-    result = tf.cast(result, tf.float32)
+    num_data = tf.cast(tf.shape(y_true), result.dtype)
+    result = tf.cast(result / num_data[0], tf.float32)
 
     return result
 
@@ -139,7 +140,8 @@ def u_rate(y_true, y_pred):
     """
     u_p, d_p, _ = _up_dp_qp(y_true, y_pred)
     result = u_p / (u_p + d_p)
-    result = tf.cast(result, tf.float32)
+    num_data = tf.cast(tf.shape(y_true), result.dtype)
+    result = tf.cast(result / num_data[0], tf.float32)
 
     return result
 
@@ -161,7 +163,9 @@ def err_rate(y_true, y_pred):
     """
     u_p, d_p, q_p = _up_dp_qp(y_true, y_pred)
     result = (q_p + u_p) / d_p
-    result = tf.cast(result, tf.float32)
+    num_data = tf.cast(tf.shape(y_true), result.dtype)
+    result = tf.cast(result / num_data[0], tf.float32)
+    result = tf.math.abs(result)
 
     return result
 

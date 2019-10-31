@@ -7,3 +7,4 @@
 .*.swp
 *.ipynb_checkpoints/
 *.mypy_cache
+dataset
