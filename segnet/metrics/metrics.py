@@ -64,6 +64,7 @@ def _static_binarization(x):
         new_x: Binarized tensor
     """
     new_x = tf.where(x >= 0.5, 1, 0)
+    new_x = tf.cast(new_x, tf.float32)
 
     return new_x
 
@@ -96,8 +97,8 @@ def _up_dp_qp(x, y):
     y_t = _static_binarization(y_t)
     y_p = _static_binarization(y_p)
     d_p = tf.reduce_sum(y_t * y_p)
-    q_p = tf.reduce_sum(y_t * tf.bitwise.invert(y_p))
-    u_p = tf.reduce_sum(y_p * tf.bitwise.invert(y_t))
+    q_p = tf.reduce_sum(y_t * (1.0 - y_p))
+    u_p = tf.reduce_sum(y_p * (1.0 - y_t))
 
     return u_p, d_p, q_p
 
@@ -116,7 +117,7 @@ def o_rate(y_true, y_pred):
         result: Constant Tensor with the OR value.
     """
     u_p, d_p, q_p = _up_dp_qp(y_true, y_pred)
-    result = q_p / (u_p + d_p)
+    result = q_p / (u_p + d_p + 1.0)
     num_data = tf.cast(tf.shape(y_true), result.dtype)
     result = tf.cast(result / num_data[0], tf.float32)
 
@@ -139,7 +140,7 @@ def u_rate(y_true, y_pred):
         result: Constant Tensor with the UR value.
     """
     u_p, d_p, _ = _up_dp_qp(y_true, y_pred)
-    result = u_p / (u_p + d_p)
+    result = u_p / (u_p + d_p + 1.0)
     num_data = tf.cast(tf.shape(y_true), result.dtype)
     result = tf.cast(result / num_data[0], tf.float32)
 
@@ -162,7 +163,7 @@ def err_rate(y_true, y_pred):
         result: Constant Tensor with the ER value.
     """
     u_p, d_p, q_p = _up_dp_qp(y_true, y_pred)
-    result = (q_p + u_p) / d_p
+    result = (q_p + u_p) / (d_p + 1.0)
     num_data = tf.cast(tf.shape(y_true), result.dtype)
     result = tf.cast(result / num_data[0], tf.float32)
     result = tf.math.abs(result)
