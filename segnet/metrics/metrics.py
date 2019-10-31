@@ -21,6 +21,7 @@ def jaccard_index(y_true, y_pred):
     union = tf.reduce_sum(y_true_f) + tf.reduce_sum(y_pred_f)
     result = (intersection + 1.0) / (union - intersection + 1.0)
     result = tf.reduce_mean(result)
+    result = tf.cast(result, tf.float32)
 
     return result
 
@@ -63,7 +64,8 @@ def _static_binarization(x):
     Returns:
         new_x: Binarized tensor
     """
-    new_x = tf.where(x >= 0.5, tf.constant([1]), tf.constant([0]))
+    new_x = tf.where(x >= 0.5, 1, 0)
+    new_x = tf.cast(new_x, tf.float32)
 
     return new_x
 
@@ -79,7 +81,7 @@ def _up_dp_qp(x, y):
         excluded from the segmentation result but actually included
     - Dp, the number of pixels that should be included in the segmentation result
         and are also actually included.
-    This implementation leverages logical operations and bitwise invertions for
+    This implementation leverages logical operations and invertions for
     a faster computation of the values.
 
     Args:
@@ -96,8 +98,8 @@ def _up_dp_qp(x, y):
     y_t = _static_binarization(y_t)
     y_p = _static_binarization(y_p)
     d_p = tf.reduce_sum(y_t * y_p)
-    q_p = tf.reduce_sum(y_t * tf.bitwise.invert(y_p))
-    u_p = tf.reduce_sum(y_p * tf.bitwise.invert(y_t))
+    q_p = tf.reduce_sum(y_t * (1.0 - y_p))
+    u_p = tf.reduce_sum(y_p * (1.0 - y_t))
 
     return u_p, d_p, q_p
 
@@ -116,8 +118,11 @@ def o_rate(y_true, y_pred):
         result: Constant Tensor with the OR value.
     """
     u_p, d_p, q_p = _up_dp_qp(y_true, y_pred)
-    result = q_p / (u_p + d_p)
-    result = tf.cast(result, tf.float32)
+    # Add a smoothing factor of 1.0 to prevent division by zero
+    result = q_p / (u_p + d_p + 1.0)
+    # Use the number of images as a means of normalizing the result
+    num_data = tf.cast(tf.shape(y_true), result.dtype)
+    result = tf.cast(result / num_data[0], tf.float32)
 
     return result
 
@@ -138,8 +143,11 @@ def u_rate(y_true, y_pred):
         result: Constant Tensor with the UR value.
     """
     u_p, d_p, _ = _up_dp_qp(y_true, y_pred)
-    result = u_p / (u_p + d_p)
-    result = tf.cast(result, tf.float32)
+    # Add a smoothing factor of 1.0 to prevent division by zero
+    result = u_p / (u_p + d_p + 1.0)
+    # Use the number of images as a means of normalizing the result
+    num_data = tf.cast(tf.shape(y_true), result.dtype)
+    result = tf.cast(result / num_data[0], tf.float32)
 
     return result
 
@@ -160,8 +168,12 @@ def err_rate(y_true, y_pred):
         result: Constant Tensor with the ER value.
     """
     u_p, d_p, q_p = _up_dp_qp(y_true, y_pred)
-    result = (q_p + u_p) / d_p
-    result = tf.cast(result, tf.float32)
+    # Add a smoothing factor of 1.0 to prevent division by zero
+    result = (q_p + u_p) / (d_p + 1.0)
+    # Use the number of images as a means of normalizing the result
+    num_data = tf.cast(tf.shape(y_true), result.dtype)
+    result = tf.cast(result / num_data[0], tf.float32)
+    result = tf.math.abs(result)
 
     return result
 
