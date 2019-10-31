@@ -1,7 +1,7 @@
 import tensorflow as tf
 from .metrics import jaccard_index
 
-def ternaus_loss(y_true, y_pred):
+def ternaus_loss(y_true: tf.Tensor, y_pred: tf.Tensor) -> tf.Tensor:
     """Evaluate the Ternaus loss.
 
     Loss inspired by TernausNet
