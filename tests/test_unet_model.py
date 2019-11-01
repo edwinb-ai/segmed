@@ -1,6 +1,6 @@
 import tensorflow.keras as K
-from segnet.models import Unet
-from segnet.metrics.metrics import jaccard_index
+from segmed.models import Unet
+from segmed.metrics.metrics import jaccard_index
 import numpy as np
 from . import SimpleDataset
 

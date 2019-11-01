@@ -13,14 +13,14 @@ except:
     REQUIRED = []
 
 setup(
-    name="segnet",
+    name="segmed",
     version="0.6",
     author="Edwin Bedolla",
     author_email="developeredwin@gmail.com",
     packages=find_packages(),
     install_requires=REQUIRED,
     license="LICENSE",
-    url="https://github.com/DCI-NET/segnet",
+    url="https://github.com/DCI-NET/segmed",
     description="Applying Deep Learning to medical image segmentation tasks.",
     long_description=open("README.md").read(),
 )

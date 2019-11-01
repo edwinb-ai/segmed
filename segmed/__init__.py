@@ -1,4 +1,4 @@
-name = "segnet"
+name = "segmed"
 
 from .metrics import *
 from .models import *
