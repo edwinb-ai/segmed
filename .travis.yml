@@ -10,8 +10,8 @@ install:
   - conda config --set always_yes yes --set changeps1 no
   - conda update -q conda
   - conda info -a
-  - conda env create -f segnet_env.yml
-  - conda activate segnet
+  - conda env create -f segmed_env.yml
+  - conda activate segmed
 
 script:
   pytest

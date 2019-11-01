@@ -1,4 +1,4 @@
-name: segnet
+name: segmed
 channels:
   - defaults
 dependencies:
@@ -10,7 +10,7 @@ dependencies:
     - scikit-image
     - scikit-learn
     - pytest
-    # Install segnet, i.e. this package
+    # Install segmed, i.e. this package
     - .
-prefix: /home/edwinb/anaconda3/envs/segnet
+prefix: /home/edwinb/anaconda3/envs/segmed
 

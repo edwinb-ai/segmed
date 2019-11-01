@@ -4,6 +4,6 @@ tests:
   script:
     - apt-get update -q -y
     - apt-get install -y build-essential
-    - conda env create -f segnet_env.yml
-    - source activate segnet
+    - conda env create -f segmed_env.yml
+    - source activate segmed
     - pytest

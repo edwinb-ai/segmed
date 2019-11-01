@@ -1,5 +1,5 @@
 import pytest
-from segnet.utils import utils
+from segmed.utils import utils
 
 
 class TestUtilsExtractData:

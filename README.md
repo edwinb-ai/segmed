@@ -1,4 +1,4 @@
-# SegNet [![Build Status](https://travis-ci.org/DCI-NET/segnet.svg?branch=master)](https://travis-ci.org/DCI-NET/segnet)
+# SegMed [![Build Status](https://travis-ci.org/DCI-NET/segmed.svg?branch=master)](https://travis-ci.org/DCI-NET/segmed)
 
 This is a collection of Deep Learning semantic segmentation models to use for
 specific tasks, namely medical images, cells, histological data and related.
@@ -7,7 +7,7 @@ specific tasks, namely medical images, cells, histological data and related.
 
 The models here presented are just two, namely the [U-Net](https://arxiv.org/pdf/1505.04597.pdf)
 and the [MultiResUNet](https://arxiv.org/pdf/1902.04049.pdf). These models have been a very good
-application of Fully Convolutional Networks to the image segmentation task, and are very
+application of Fully Convolutional Networks to the medical image segmentation task, and are very
 well suited for it.
 
 ## Implementation
@@ -24,19 +24,19 @@ There are several ways to install this package.
 
 The easiest way to install this package is using `pip` with the following command
 
-    pip install git+https://github.com/DCI-NET/segnet
+    pip install git+https://github.com/DCI-NET/segmed
 
 although it is _highly encouraged_ to do this inside a virtual environment.
 
 If using [Colaboratory](https://colab.research.google.com/notebooks/welcome.ipynb)
 then this is the **preferred** way to use the package.
 
-**IMPORTANT**: When using Colaboratory one must always install `TensorFlow 2.0` first and then install `segnet`,
+**IMPORTANT**: When using Colaboratory one must always install `TensorFlow 2.0` first and then install `segmed`,
 i.e. this package, using the following commands in a cell within a Colaboratory notebook:
 ```
 !pip install --upgrade pip
 !pip install tensorflow
-!pip install git+https://github.com/DCI-NET/segnet
+!pip install git+https://github.com/DCI-NET/segmed
 ```
 
 ### Using `pipenv`
@@ -45,9 +45,9 @@ i.e. this package, using the following commands in a cell within a Colaboratory 
 to run the following:
 ```
 # create a new directory for this
-mkdir segnet_test
+mkdir segmed_test
 # install and create a new environment
-pipenv install git+https://github.com/DCI-NET/segnet#egg=segnet
+pipenv install git+https://github.com/DCI-NET/segmed#egg=segmed
 # activate the newly created shell with everything installed
 pipenv shell
 ```
@@ -62,12 +62,12 @@ for those that use the [Anaconda distribution](https://www.anaconda.com/distribu
 
 To install the environment make sure you have [conda](https://conda.io/en/latest/) installed, then run the following
 
-    conda env create -f segnet_env.yml
+    conda env create -f segmed_env.yml
 
 this should ask you to confirm the installation, say yes and proceed with the installation. After that, activate the newly
 created environment
 
-    conda activate segnet
+    conda activate segmed
 
 and now you are ready to run the code within this repository.
 
@@ -98,8 +98,8 @@ with this repository; some other datasets **cannot** be redistributed as per req
 For completeness, here is a simple example. Assuming you have followed the instructions and everything is installed
 correctly, you can do the following to train a simple U-Net model:
 ```python
-from segnet.train import train_unet
-from segnet.models import Unet
+from segmed.train import train_unet
+from segmed.models import Unet
 
 # Define some example hyperparameters
 batch_size = 8

@@ -1,4 +1,4 @@
-from segnet.metrics import metrics as mts
+from segmed.metrics import metrics as mts
 import tensorflow as tf
 
 

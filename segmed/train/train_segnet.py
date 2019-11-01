@@ -1,9 +1,9 @@
-from segnet.models import unet
-from segnet.metrics import metrics as mts
+from segmed.models import unet
+from segmed.metrics import metrics as mts
 import tensorflow as tf
 
 
-def train_segnet(
+def train_segmed(
     model,
     img_path,
     mask_path,
@@ -18,7 +18,7 @@ def train_segnet(
     show=False,
 ):
 
-    """A simple utility function for training the any `segnet` model.
+    """A simple utility function for training the any `segmed` model.
 
     Takes two paths for images and segmentation maps and rescales them, splits
     them into training and validation, while saving the best model trained.
