@@ -14,7 +14,7 @@ except:
 
 setup(
     name="segmed",
-    version="0.6",
+    version="0.6.1",
     author="Edwin Bedolla",
     author_email="developeredwin@gmail.com",
     packages=find_packages(),
