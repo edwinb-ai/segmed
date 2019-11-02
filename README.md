@@ -24,7 +24,7 @@ There are several ways to install this package.
 
 The easiest way to install this package is using `pip` with the following command
 
-    pip install git+https://github.com/DCI-NET/segmed
+    pip install segmed
 
 although it is _highly encouraged_ to do this inside a virtual environment.
 
@@ -35,28 +35,27 @@ then this is the **preferred** way to use the package.
 i.e. this package, using the following commands in a cell within a Colaboratory notebook:
 ```
 !pip install --upgrade pip
-!pip install tensorflow
-!pip install git+https://github.com/DCI-NET/segmed
+!pip install segmed
+!pip install --upgrade tensorflow
 ```
 
-### Using `pipenv`
+### Using `poetry`
 
-[`pipenv`](https://pipenv.readthedocs.io/en/latest/) is the **preferred** way to install this package on a local machine. One just needs
-to run the following:
-```
-# create a new directory for this
-mkdir segmed_test
-# install and create a new environment
-pipenv install git+https://github.com/DCI-NET/segmed#egg=segmed
-# activate the newly created shell with everything installed
-pipenv shell
+[`poetry`](https://poetry.eustace.io/) is supported, by following the
+[installation](https://poetry.eustace.io/docs/#installation) instructions to get `poetry` installed, the following
+command should install `segmed` in a virtual environment:
+```shell
+# clone the repository
+git clone https://github.com/DCI-NET/segmed
+# run poetry and install
+poetry install
 ```
 
-`pipenv` facilitates the use of dependencies and virtual environments, making life easier.
+`poetry` is a next-gen dependecy manager and makes everything a lot easier.
 
 ### Using `conda`
 
-This bundle also comes with a
+This package also comes with a
 [conda environment](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html)
 for those that use the [Anaconda distribution](https://www.anaconda.com/distribution/).
 
