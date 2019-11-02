@@ -74,14 +74,18 @@ and now you are ready to run the code within this repository.
 ## Unit tests
 
 This repository has some unit tests available that should be running constantly in the background,
-and the status of the current code coverage is displayed in the badge above (the one right to the title).
+and the status of the current code build is displayed in the badge above (the one right to the title).
 
-One can manually run the tests, too. Having [pytest](https://pytest.org/en/latest/) (one of the dependencies) 
-installed one just needs to run
+One can manually run the tests, too. You can download this repository with `git` like so:
+
+    git clone https://github.com/DCI-NET/segmed.git
+
+Then, you install [pytest](https://pytest.org/en/latest/) and just run the following command
 
     pytest
 
-and the test should start running, with a few import and API warnings, but everything should pass.
+and the test suite should start running, with a few import and API warnings, but everything should pass
+if the badge above says _passing_ in green.
 
 ## Examples
 
