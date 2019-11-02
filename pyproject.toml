@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "segmed"
+version = "0.6.1"
+description = ""
+authors = ["Edwin <developeredwin@gmail.com>"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.7"
+scikit-learn = "^0.21.3"
+scikit-image = "^0.16.2"
+tensorflow = { git = "https://github.com/tensorflow/tensorflow", branch = "master"}
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.2"
+mypy = "^0.740.0"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"

@@ -9,3 +9,4 @@
 *.mypy_cache
 dataset
 *.log
+dist/
