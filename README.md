@@ -97,7 +97,7 @@ but you will _not_ be able to rerun the notebooks.
 The reason for this is that most of the datasets are **very** large, so they cannot be bundled
 with this repository; some other datasets **cannot** be redistributed as per request of the original authors.
 
-Either way, **all** of the trained models are **freely available** upon request.
+Either way, **all** of the trained models and weights are **freely available** upon request.
 
 ### Demo
 
