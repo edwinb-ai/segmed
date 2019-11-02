@@ -12,7 +12,6 @@ install:
   - conda info -a
   - conda env create -f segmed_env.yml
   - conda activate segmed
-  - pip install -e .
 
 script:
   pytest

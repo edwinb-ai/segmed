@@ -9,5 +9,7 @@ dependencies:
     - tensorflow
     - scikit-image
     - scikit-learn
+    - pytest
+    - .
 prefix: /home/edwinb/anaconda3/envs/segmed
 
