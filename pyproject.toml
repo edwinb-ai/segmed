@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "segmed"
-version = "0.6.7"
+version = "0.6.9"
 description = "Applying Deep Learning to medical image segmentation tasks"
 authors = ["Edwin Bedolla <developeredwin@gmail.com>"]
 license = "MIT"
@@ -13,6 +13,7 @@ include = ["LICENSE"]
 python = "^3.7"
 scikit-learn = "^0.21.3"
 scikit-image = "^0.16.2"
+tensorflow = "^2.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
