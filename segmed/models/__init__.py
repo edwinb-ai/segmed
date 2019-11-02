@@ -2,6 +2,7 @@ from tensorflow.keras.regularizers import L1L2
 from .unet import simple_unet, custom_unet
 from .segmodel import SegmentationModel
 from .multiresunet import *
+from typing import Tuple, Optional
 
 
 class Unet(SegmentationModel):
@@ -26,10 +27,10 @@ class Unet(SegmentationModel):
 
     def __init__(
         self,
-        input_size=(512, 512, 3),
-        variant=None,
-        parameters=None,
-        keras_parameters=None,
+        input_size: Tuple[int, int, int] = (512, 512, 3),
+        variant: Optional[str] = None,
+        parameters: Optional[dict] = None,
+        keras_parameters: Optional[dict] = None,
     ):
         """Creates a Unet model with the specified variant.
 
@@ -85,7 +86,7 @@ class Unet(SegmentationModel):
         }
         self._seg_model = custom_unet(self._input_size, conv, **options)
 
-    def collect(self):
+    def collect(self) -> tf.keras.Model:
         """Gather all the information from the model, inside and outside.
 
         Generate a Keras instance from all the information.

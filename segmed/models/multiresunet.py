@@ -1,7 +1,15 @@
 from tensorflow import keras as K
+from typing import Tuple, Optional
 
 
-def conv2d(x, filters, shape, padding="same", strides=(1, 1), activation="relu"):
+def conv2d(
+    x: K.Layer,
+    filters: int,
+    shape: Tuple[int, int, int],
+    padding: str = "same",
+    strides: Tuple[int, int] = (1, 1),
+    activation: str = "relu",
+) -> K.Layer:
     """
     2D Convolutional layers with Batch Normalization
     
@@ -30,7 +38,7 @@ def conv2d(x, filters, shape, padding="same", strides=(1, 1), activation="relu")
     return x
 
 
-def MultiResBlock(u_val, input, alpha=1.67):
+def MultiResBlock(u_val: int, input: K.Layer, alpha: float = 1.67) -> K.Layer:
     """MultiRes Block, as defined in the paper.
 
     Alpha is a constant value that controls
@@ -76,7 +84,7 @@ def MultiResBlock(u_val, input, alpha=1.67):
     return out
 
 
-def ResPath(filters, input, length=None):
+def ResPath(filters: int, input: K.Layer, length: Optional[int] = None):
     """ResPath, to mitigate the semantic gap in the architecture.
 
     This function creates a path with just one combination of residual
@@ -117,7 +125,7 @@ def ResPath(filters, input, length=None):
     return out
 
 
-def MultiResUnet(input_size=(256, 256, 3)):
+def MultiResUnet(input_size: Tuple[int, int, int] = (256, 256, 3)) -> K.Model:
     """The MultiResUNet neural network.
 
     A TensorFlow implementation of the MultiResUNet architecture as defined in the
