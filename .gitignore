@@ -1,6 +1,6 @@
 *.pyc
 *.h5
-.vscode/*
+.vscode/
 *__pycache__/
 *.pytest_cache
 *.egg*
@@ -9,3 +9,5 @@
 *.mypy_cache
 dataset
 *.log
+dist/
+*.lock

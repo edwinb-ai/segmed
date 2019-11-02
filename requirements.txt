@@ -1,5 +1,0 @@
-gast == 0.2.2
-tensorflow
-scikit-image
-scikit-learn
-pytest

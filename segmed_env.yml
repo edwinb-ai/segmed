@@ -10,7 +10,6 @@ dependencies:
     - scikit-image
     - scikit-learn
     - pytest
-    # Install segmed, i.e. this package
     - .
 prefix: /home/edwinb/anaconda3/envs/segmed
 

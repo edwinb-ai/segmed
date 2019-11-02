@@ -24,7 +24,7 @@ There are several ways to install this package.
 
 The easiest way to install this package is using `pip` with the following command
 
-    pip install git+https://github.com/DCI-NET/segmed
+    pip install segmed
 
 although it is _highly encouraged_ to do this inside a virtual environment.
 
@@ -35,28 +35,27 @@ then this is the **preferred** way to use the package.
 i.e. this package, using the following commands in a cell within a Colaboratory notebook:
 ```
 !pip install --upgrade pip
-!pip install tensorflow
-!pip install git+https://github.com/DCI-NET/segmed
+!pip install segmed
+!pip install --upgrade tensorflow
 ```
 
-### Using `pipenv`
+### Using `poetry`
 
-[`pipenv`](https://pipenv.readthedocs.io/en/latest/) is the **preferred** way to install this package on a local machine. One just needs
-to run the following:
-```
-# create a new directory for this
-mkdir segmed_test
-# install and create a new environment
-pipenv install git+https://github.com/DCI-NET/segmed#egg=segmed
-# activate the newly created shell with everything installed
-pipenv shell
+[`poetry`](https://poetry.eustace.io/) is supported, by following the
+[installation](https://poetry.eustace.io/docs/#installation) instructions to get `poetry` installed, the following
+command should install `segmed` in a virtual environment:
+```shell
+# clone the repository
+git clone https://github.com/DCI-NET/segmed
+# run poetry and install
+poetry install
 ```
 
-`pipenv` facilitates the use of dependencies and virtual environments, making life easier.
+`poetry` is a next-gen dependecy manager and makes everything a lot easier.
 
 ### Using `conda`
 
-This bundle also comes with a
+This package also comes with a
 [conda environment](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html)
 for those that use the [Anaconda distribution](https://www.anaconda.com/distribution/).
 
@@ -74,24 +73,31 @@ and now you are ready to run the code within this repository.
 ## Unit tests
 
 This repository has some unit tests available that should be running constantly in the background,
-and the status of the current code coverage is displayed in the badge above (the one right to the title).
+and the status of the current code build is displayed in the badge above (the one right to the title).
 
-One can manually run the tests, too. Having [pytest](https://pytest.org/en/latest/) (one of the dependencies) 
-installed one just needs to run
+One can manually run the tests, too. You can download this repository with `git` like so:
+
+    git clone https://github.com/DCI-NET/segmed.git
+
+Then, you install [pytest](https://pytest.org/en/latest/) and just run the following command
 
     pytest
 
-and the test should start running, with a few import and API warnings, but everything should pass.
+and the test suite should start running, with a few import and API warnings, but everything should pass
+if the badge above says _passing_ in green.
 
 ## Examples
 
-This repository also has some (_very_) barebones examples of how to use and employ these models.
-However, most were run in a private Colaboratory account and most of the data cannot be used.
-These examples should only be used to have a basic idea of how to run and create an image segmentation
-pipeline, but you will _not_ be able to rerun the notebooks.
+This repository also has some (_very_) barebones examples of how to use these models.
+However, they were run in a local machine and most of the data cannot be used.
+These examples should be used as a _tutorial_ for the package,
+just to have a basic idea of how to run and create an image segmentation pipeline with `segmed`, 
+but you will _not_ be able to rerun the notebooks.
 
 The reason for this is that most of the datasets are **very** large, so they cannot be bundled
 with this repository; some other datasets **cannot** be redistributed as per request of the original authors.
+
+Either way, **all** of the trained models and weights are **freely available** upon request.
 
 ### Demo
 
