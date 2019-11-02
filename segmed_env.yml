@@ -9,7 +9,5 @@ dependencies:
     - tensorflow
     - scikit-image
     - scikit-learn
-    # Install segmed, i.e. this package
-    - .
 prefix: /home/edwinb/anaconda3/envs/segmed
 
