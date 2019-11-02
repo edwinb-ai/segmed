@@ -88,13 +88,16 @@ if the badge above says _passing_ in green.
 
 ## Examples
 
-This repository also has some (_very_) barebones examples of how to use and employ these models.
-However, most were run in a private Colaboratory account and most of the data cannot be used.
-These examples should only be used to have a basic idea of how to run and create an image segmentation
-pipeline, but you will _not_ be able to rerun the notebooks.
+This repository also has some (_very_) barebones examples of how to use these models.
+However, they were run in a local machine and most of the data cannot be used.
+These examples should be used as a _tutorial_ for the package,
+just to have a basic idea of how to run and create an image segmentation pipeline with `segmed`, 
+but you will _not_ be able to rerun the notebooks.
 
 The reason for this is that most of the datasets are **very** large, so they cannot be bundled
 with this repository; some other datasets **cannot** be redistributed as per request of the original authors.
+
+Either way, **all** of the trained models are **freely available** upon request.
 
 ### Demo
 
