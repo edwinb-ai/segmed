@@ -1,15 +1,18 @@
 [tool.poetry]
 name = "segmed"
-version = "0.6.1"
-description = ""
-authors = ["Edwin <developeredwin@gmail.com>"]
+version = "0.6.7"
+description = "Applying Deep Learning to medical image segmentation tasks"
+authors = ["Edwin Bedolla <developeredwin@gmail.com>"]
 license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/DCI-NET/segmed"
+repository = "https://github.com/DCI-NET/segmed"
+include = ["LICENSE"]
 
 [tool.poetry.dependencies]
 python = "^3.7"
 scikit-learn = "^0.21.3"
 scikit-image = "^0.16.2"
-tensorflow = { git = "https://github.com/tensorflow/tensorflow", branch = "master"}
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
