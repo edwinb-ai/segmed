@@ -1,7 +1,8 @@
 import tensorflow as tf
+from typing import Union
 
 
-def jaccard_index(y_true, y_pred):
+def jaccard_index(y_true: tf.Tensor, y_pred: tf.Tensor) -> tf.Tensor:
     """Evaluate the Jaccard index.
 
     Assuming that `y_true` and `y_pred` are images,
@@ -26,7 +27,7 @@ def jaccard_index(y_true, y_pred):
     return result
 
 
-def dice_coef(y_true, y_pred, smooth=1.0):
+def dice_coef(y_true: tf.Tensor, y_pred: tf.Tensor, smooth=1.0) -> tf.Tensor:
     """Evaluate the Sorensen-Dice coefficient.
 
     Assuming that `y_true` and `y_pred` are images.
@@ -51,7 +52,7 @@ def dice_coef(y_true, y_pred, smooth=1.0):
     return result
 
 
-def _static_binarization(x):
+def _static_binarization(x: tf.Tensor) -> tf.Tensor:
     """Take a TensorFlow Tensor object and statically binarize it.
     
     This function makes the assumption that `x`
@@ -70,7 +71,7 @@ def _static_binarization(x):
     return new_x
 
 
-def _up_dp_qp(x, y):
+def _up_dp_qp(x: tf.Tensor, y: tf.Tensor) -> Union[tf.Tensor, tf.Tensor, tf.Tensor]:
     """Obtain under, over and overall error segmentation rates.
 
     By binarizing a ground truth and predicted segmentation maps,
@@ -104,7 +105,7 @@ def _up_dp_qp(x, y):
     return u_p, d_p, q_p
 
 
-def o_rate(y_true, y_pred):
+def o_rate(y_true: tf.Tensor, y_pred: tf.Tensor) -> tf.Tensor:
     """Calculate the over segmentation error.
     
     Assuming `y_true` and `y_pred` are images, this function calculates
@@ -127,7 +128,7 @@ def o_rate(y_true, y_pred):
     return result
 
 
-def u_rate(y_true, y_pred):
+def u_rate(y_true: tf.Tensor, y_pred: tf.Tensor) -> tf.Tensor:
     """Calculate the under segmentation error.
     
     Assuming `y_true` and `y_pred` are images, this function calculates
@@ -152,7 +153,7 @@ def u_rate(y_true, y_pred):
     return result
 
 
-def err_rate(y_true, y_pred):
+def err_rate(y_true: tf.Tensor, y_pred: tf.Tensor) -> tf.Tensor:
     """Calculate the overall segmentation error.
     
     Assuming `y_true` and `y_pred` are images, this function calculates
