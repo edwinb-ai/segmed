@@ -11,12 +11,12 @@ def train_unet(
     epochs: Optional[int] = 25,
     steps_per_epoch: Optional[int] = 3125,
     val_split: Optional[float] = 0.2,
-    optimizer: Optional[tf.keras.optimizers] = tf.keras.optimizers.Adam(),
+    optimizer: Optional[tf.keras.optimizers.Optimizer] = tf.keras.optimizers.Adam(),
     monitor: Optional[str] = "val_jaccard_index",
     model_file: Optional[str] = "unet.h5",
     seed: Optional[int] = 1,
     show: Optional[bool] = False,
-) -> tf.keras.History:
+) -> tf.keras.callbacks.History:
 
     """ A simple utility function for training the U-Net.
     

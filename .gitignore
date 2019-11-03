@@ -14,3 +14,8 @@ dist/
 *.lock
 *.pytype
 *.nox
+# ignore the built documentation
+docs/build/
+# also the building process
+Makefile
+make.bat

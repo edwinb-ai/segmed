@@ -47,8 +47,8 @@ def MultiResBlock(
     
     Args:
         u_val: Calculate the weight it needs per convolution layer.
-        alpha: Value to control the number of filters in the convolution layers.
         input: The previous layer from the block.
+        alpha: Value to control the number of filters in the convolution layers.
     
     Returns:
         out: The complete residual block built.
@@ -86,7 +86,9 @@ def MultiResBlock(
     return out
 
 
-def ResPath(filters: int, input: K.layers.Layer, length: Optional[int] = None) -> K.layers.Layer:
+def ResPath(
+    filters: int, input: K.layers.Layer, length: Optional[int] = None
+) -> K.layers.Layer:
     """ResPath, to mitigate the semantic gap in the architecture.
 
     This function creates a path with just one combination of residual

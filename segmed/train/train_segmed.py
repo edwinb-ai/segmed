@@ -4,7 +4,7 @@ import tensorflow as tf
 from typing import Optional, Tuple
 
 
-def train_segmed(
+def train_model(
     model: tf.keras.Model,
     img_path: str,
     mask_path: str,
@@ -12,12 +12,12 @@ def train_segmed(
     epochs: Optional[int] = 25,
     steps_per_epoch: Optional[int] = 3125,
     val_split: Optional[float] = 0.2,
-    optimizer: Optional[tf.keras.optimizers] = tf.keras.optimizers.Adam(),
+    optimizer: Optional[tf.keras.optimizers.Optimizer] = tf.keras.optimizers.Adam(),
     monitor: Optional[str] = "val_jaccard_index",
     model_file: Optional[str] = "segmed_model.h5",
     seed: Optional[int] = 1,
     show: Optional[bool] = False,
-) -> tf.keras.History:
+) -> tf.keras.callbacks.History:
 
     """A simple utility function for training the any `segmed` model.
 
