@@ -1,7 +1,7 @@
 from tensorflow.keras.regularizers import L1L2
 from .unet import simple_unet, custom_unet
 from .segmodel import SegmentationModel
-from .multiresunet import *
+from .multiresunet import MultiResUnet
 from typing import Tuple, Optional
 
 
@@ -50,11 +50,11 @@ class Unet(SegmentationModel):
         self._variant = variant
 
         # The simple model has a ReLU activation and "same" padding
-        if self._variant is "simple":
+        if self._variant == "simple":
             self._activation = "relu"
             self._padding = "same"
         # For the custom model, parse all the parameters from the dictionary
-        if self._variant is "custom":
+        if self._variant == "custom":
             if parameters is None:
                 raise ValueError("For a custom network, parameters must be set.")
             # Create the model with the specified parameters
@@ -91,17 +91,17 @@ class Unet(SegmentationModel):
 
         Generate a Keras instance from all the information.
         This way the model can be instantiated
-        from the beginning or by updating the attributes individually until you are
-        satisfied with the model you have.
+        from the beginning or by updating the attributes individually until
+        you are satisfied with the model you have.
 
         Returns:
-            _seg_model (keras.Model): A tf.keras.Model instance with all the information
-                from the attributes.
+            _seg_model (keras.Model): A tf.keras.Model instance with all
+                the information from the attributes.
         """
-        if self._variant is "simple":
+        if self._variant == "simple":
             self._simple_init()
 
-        if self._variant is "custom":
+        if self._variant == "custom":
             self._custom_init()
 
         return self._seg_model

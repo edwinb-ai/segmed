@@ -11,3 +11,4 @@ dataset
 *.log
 dist/
 *.lock
+*.pytype

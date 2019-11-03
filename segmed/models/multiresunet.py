@@ -5,10 +5,10 @@ from typing import Tuple, Optional
 def conv2d(
     x: K.Layer,
     filters: int,
-    shape: Tuple[int, int, int],
-    padding: str = "same",
+    shape: Tuple[int, int],
+    padding: Optional[str] = "same",
     strides: Tuple[int, int] = (1, 1),
-    activation: str = "relu",
+    activation: Optional[str] = "relu",
 ) -> K.Layer:
     """
     2D Convolutional layers with Batch Normalization
@@ -38,7 +38,7 @@ def conv2d(
     return x
 
 
-def MultiResBlock(u_val: int, input: K.Layer, alpha: float = 1.67) -> K.Layer:
+def MultiResBlock(u_val: int, input: K.Layer, alpha: Optional[float] = 1.67) -> K.Layer:
     """MultiRes Block, as defined in the paper.
 
     Alpha is a constant value that controls
