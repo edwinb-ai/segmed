@@ -18,6 +18,9 @@ tensorflow = "^2.0"
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
 mypy = "^0.740.0"
+pytype = "^2019.10"
+pylint = "^2.4"
+nox = "^2019.8"
 
 [build-system]
 requires = ["poetry>=0.12"]

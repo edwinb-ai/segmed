@@ -93,11 +93,11 @@ def simple_unet(input_size: Tuple[int, int, int], conv: dict) -> K.Model:
 
 
 def _encoder(
-    x: K.Layer,
+    x: K.layers.Layer,
     conv: dict,
     dropout: Optional[float] = None,
     batch_norm: Optional[bool] = False,
-) -> K.Layer:
+) -> K.layers.Layer:
     """
     Create an encoder block with dropout, batch normalization, kernel regularatization and
     more. It basically supports every possible parameter from the Keras API.
@@ -135,8 +135,11 @@ def _encoder(
 
 
 def _concatenate_and_upsample(
-    prev_layer: K.Layer, cat_layer: K.Layer, upsample: Tuple[int, int], conv: dict
-) -> K.Layer:
+    prev_layer: K.layers.Layer,
+    cat_layer: K.layers.Layer,
+    upsample: Tuple[int, int],
+    conv: dict,
+) -> K.layers.Layer:
     """
     Decoder blocks for the Unet where upsampling and concatenation take part.
 

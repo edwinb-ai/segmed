@@ -3,13 +3,13 @@ from typing import Tuple, Optional
 
 
 def conv2d(
-    x: K.Layer,
+    x: K.layers.Layer,
     filters: int,
     shape: Tuple[int, int],
     padding: Optional[str] = "same",
     strides: Tuple[int, int] = (1, 1),
     activation: Optional[str] = "relu",
-) -> K.Layer:
+) -> K.layers.Layer:
     """
     2D Convolutional layers with Batch Normalization
     
@@ -38,7 +38,9 @@ def conv2d(
     return x
 
 
-def MultiResBlock(u_val: int, input: K.Layer, alpha: Optional[float] = 1.67) -> K.Layer:
+def MultiResBlock(
+    u_val: int, input: K.layers.Layer, alpha: Optional[float] = 1.67
+) -> K.layers.Layer:
     """MultiRes Block, as defined in the paper.
 
     Alpha is a constant value that controls the number of parameters in the block.
@@ -84,7 +86,7 @@ def MultiResBlock(u_val: int, input: K.Layer, alpha: Optional[float] = 1.67) -> 
     return out
 
 
-def ResPath(filters: int, input: K.Layer, length: Optional[int] = None):
+def ResPath(filters: int, input: K.layers.Layer, length: Optional[int] = None) -> K.layers.Layer:
     """ResPath, to mitigate the semantic gap in the architecture.
 
     This function creates a path with just one combination of residual

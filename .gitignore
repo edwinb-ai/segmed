@@ -10,5 +10,7 @@
 dataset
 *.log
 dist/
+# lock files ignored until tensorflow issue gets resolved
 *.lock
 *.pytype
+*.nox

@@ -14,4 +14,4 @@ install:
   - conda activate segmed
 
 script:
-  pytest
+  nox
