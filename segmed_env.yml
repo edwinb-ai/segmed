@@ -10,6 +10,8 @@ dependencies:
     - scikit-image
     - scikit-learn
     - pytest
+    - pytype
+    - nox
     - .
 prefix: /home/edwinb/anaconda3/envs/segmed
 
