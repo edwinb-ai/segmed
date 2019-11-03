@@ -1,0 +1,5 @@
+site_name: Segmed
+nav:
+  - Home: index.md
+  - About: about.md
+theme: alabaster
