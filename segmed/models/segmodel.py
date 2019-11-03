@@ -1,4 +1,4 @@
-from tensorflow.keras import Model
+from tensorflow import keras
 from typing import Optional, Tuple
 
 
@@ -11,17 +11,17 @@ class SegmentationModel:
 
     Attributes:
         _input_size: Size of the image, (height, width, channels)
-        _filters (int): the number of output filters in the convolution
-        _kernel_size (int): specifying the length of the 2D convolution window
-        _dropout (float): Value for the dropout layer, between 0 and 1.
-        _batch_norm (bool): Add batch normalization to every encoder block.
-        _up_sample (Tuple[int, int]): Upsampling factor for rows and columns.
-        _activation (str): Activation function to apply to every layer, except the last one.
-        _padding (str): Type of padding to apply to the convolution layers.
-        _pool (Tuple[int, int]): Pooling windows
-        _l1_reg (float): Value for the L1 regularizer, applied to every convolution map
-        _l2_reg (float): Value for the L2 regularizer, applied to every convolution map
-        _seg_model (keras.Model): A tf.keras.Model instance.
+        _filters: the number of output filters in the convolution
+        _kernel_size: specifying the length of the 2D convolution window
+        _dropout: Value for the dropout layer, between 0 and 1.
+        _batch_norm: Add batch normalization to every encoder block.
+        _up_sample: Upsampling factor for rows and columns.
+        _activation: Activation function to apply to every layer, except the last one.
+        _padding: Type of padding to apply to the convolution layers.
+        _pool: Pooling windows
+        _l1_reg: Value for the L1 regularizer, applied to every convolution map
+        _l2_reg: Value for the L2 regularizer, applied to every convolution map
+        _seg_model: A tf.keras.Model instance.
     """
 
     def __init__(self):
@@ -36,10 +36,10 @@ class SegmentationModel:
         self._pool: Optional[Tuple[int, int]] = (2, 2)
         self._l1_reg: Optional[float] = 0.0
         self._l2_reg: Optional[float] = 0.0
-        self._seg_model: Optional[Model] = None
+        self._seg_model: Optional[keras.Model] = None
 
     @property
-    def model(self) -> Model:
+    def model(self) -> keras.Model:
         return self._seg_model
 
     @property
