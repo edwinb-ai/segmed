@@ -87,7 +87,7 @@ def simple_unet(input_size: Tuple[int, int, int], conv: dict) -> K.Model:
     conv_9 = K.layers.Conv2D(2, 3, **conv)(conv_9)
     conv_10 = K.layers.Conv2D(1, 1, activation="sigmoid")(conv_9)
 
-    model = K.models.Model(inputs=[inputs], outputs=[conv_10], name="unet_simple")
+    model = K.Model(inputs=[inputs], outputs=[conv_10], name="unet_simple")
 
     return model
 
@@ -223,7 +223,7 @@ def custom_unet(
     )(output_layer)
     output_layer = K.layers.Conv2D(1, 1, activation="sigmoid")(output_layer)
 
-    model = K.models.Model(inputs=[inputs], outputs=[output_layer], name="unet_custom")
+    model = K.Model(inputs=[inputs], outputs=[output_layer], name="unet_custom")
 
     return model
 

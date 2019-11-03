@@ -191,7 +191,7 @@ def MultiResUnet(input_size: Tuple[int, int, int] = (256, 256, 3)) -> K.Model:
 
     conv_10 = conv2d(mresblock9, 1, (1, 1), activation="sigmoid")
 
-    model = K.models.Model(inputs=[inputs], outputs=[conv_10])
+    model = K.Model(inputs=[inputs], outputs=[conv_10])
 
     return model
 
