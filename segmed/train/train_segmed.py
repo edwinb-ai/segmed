@@ -14,9 +14,9 @@ def train_segmed(
     val_split: Optional[float] = 0.2,
     optimizer: Optional[tf.keras.optimizers] = tf.keras.optimizers.Adam(),
     monitor: Optional[str] = "val_jaccard_index",
-    model_file: Optional[str] = "unet_simple.h5",
+    model_file: Optional[str] = "segmed_model.h5",
     seed: Optional[int] = 1,
-    show: Optional[bool]=False,
+    show: Optional[bool] = False,
 ) -> tf.keras.History:
 
     """A simple utility function for training the any `segmed` model.
@@ -27,25 +27,25 @@ def train_segmed(
     documentation.
 
     Args:
-        model (tf.keras.Model): A keras model instance.
-        img_path (str): The relative path were the images are located.
-        mask_path (str): The relative path were the maps are located.
-        batch_size (int): Size of the batch to be processed.
-        epochs (int): Number of epochs to train the model.
-        steps_per_epoch (int): Total number of steps (batches of samples) to yield 
+        model: A keras model instance.
+        img_path: The relative path were the images are located.
+        mask_path: The relative path were the maps are located.
+        batch_size: Size of the batch to be processed.
+        epochs: Number of epochs to train the model.
+        steps_per_epoch: Total number of steps (batches of samples) to yield 
             before declaring one epoch finished and starting the next epoch.
-        val_split (float): Value between 0.0 and 1.0 representing the size in percentage
+        val_split: Value between 0.0 and 1.0 representing the size in percentage
             to split the dataset.
-        optimizer (`Optimizer`): A Keras optimizer instance with a valid syntax from TensorFlow.
-        monitor (str): Quantity to monitor during training; follow the Keras convention.
-        model_file (str): File to create for the ModelCheckpoint callback from Keras.
-        seed (int): Value to seed the ImageDataGenerator and always retrieve the same batch
+        optimizer: A Keras optimizer instance with a valid syntax from TensorFlow.
+        monitor: Quantity to monitor during training; follow the Keras convention.
+        model_file: File to create for the ModelCheckpoint callback from Keras.
+        seed: Value to seed the ImageDataGenerator and always retrieve the same batch
             of pairs of images.
-        show (bool): If true, plots a pair of size `batch_size` to see if the image and its
+        show: If true, plots a pair of size `batch_size` to see if the image and its
             segmentation maps are consistent. For debugging purposes only.
 
     Returns:
-        history (`History`): A `History` object. Its `History.history` attribute is a record of
+        history: A `History` object. Its `History.history` attribute is a record of
             training loss values and metrics values at successive epochs, as well as validation
             loss values and validation metrics values (if applicable).
     """
