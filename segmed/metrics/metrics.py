@@ -1,5 +1,5 @@
 import tensorflow as tf
-from typing import Union
+from typing import Union, Optional
 
 
 def jaccard_index(y_true: tf.Tensor, y_pred: tf.Tensor) -> tf.Tensor:
@@ -27,7 +27,9 @@ def jaccard_index(y_true: tf.Tensor, y_pred: tf.Tensor) -> tf.Tensor:
     return result
 
 
-def dice_coef(y_true: tf.Tensor, y_pred: tf.Tensor, smooth=1.0) -> tf.Tensor:
+def dice_coef(
+    y_true: tf.Tensor, y_pred: tf.Tensor, smooth: Optional[float] = 1.0
+) -> tf.Tensor:
     """Evaluate the Sorensen-Dice coefficient.
 
     Assuming that `y_true` and `y_pred` are images.
