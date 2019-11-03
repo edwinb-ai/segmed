@@ -1,3 +1,7 @@
+from tensorflow.keras import Model
+from typing import Optional, Tuple
+
+
 class SegmentationModel:
     """A class for a generic segmentation model.
 
@@ -6,7 +10,7 @@ class SegmentationModel:
     useful utilities, to make a custom and succint model.
 
     Attributes:
-        _input_size (Tuple[int, int, int]): Size of the image, (height, width, channels)
+        _input_size: Size of the image, (height, width, channels)
         _filters (int): the number of output filters in the convolution
         _kernel_size (int): specifying the length of the 2D convolution window
         _dropout (float): Value for the dropout layer, between 0 and 1.
@@ -19,127 +23,128 @@ class SegmentationModel:
         _l2_reg (float): Value for the L2 regularizer, applied to every convolution map
         _seg_model (keras.Model): A tf.keras.Model instance.
     """
+
     def __init__(self):
-        self._input_size = None
-        self._filters = 64
-        self._kernel_size = 3
-        self._dropout = None
-        self._batch_norm = None
-        self._up_sample = (2, 2)
-        self._activation = None
-        self._padding = None
-        self._pool = (2, 2)
-        self._l1_reg = 0.0
-        self._l2_reg = 0.0
-        self._seg_model = None
+        self._input_size: Tuple[int, int, int] = None
+        self._filters: int = 64
+        self._kernel_size: int = 3
+        self._dropout: Optional[float] = None
+        self._batch_norm: Optional[bool] = None
+        self._up_sample: Optional[Tuple[int, int]] = (2, 2)
+        self._activation: Optional[str] = None
+        self._padding: Optional[str] = None
+        self._pool: Optional[Tuple[int, int]] = (2, 2)
+        self._l1_reg: Optional[float] = 0.0
+        self._l2_reg: Optional[float] = 0.0
+        self._seg_model: Optional[Model] = None
 
     @property
-    def model(self):
+    def model(self) -> Model:
         return self._seg_model
 
     @property
-    def filters(self):
+    def filters(self) -> int:
         return self._filters
 
     @filters.setter
-    def filters(self, value):
+    def filters(self, value: int):
         self._filters = value
 
     @property
-    def kernel_size(self):
+    def kernel_size(self) -> int:
         return self._kernel_size
 
     @kernel_size.setter
-    def kernel_size(self, value):
+    def kernel_size(self, value: int):
         self._kernel_size = value
 
     @property
-    def dropout(self):
+    def dropout(self) -> float:
         return self._dropout
 
     @dropout.setter
-    def dropout(self, value):
+    def dropout(self, value: float):
         self._dropout = value
 
     @property
-    def batch_norm(self):
+    def batch_norm(self) -> bool:
         return self._batch_norm
 
     @batch_norm.setter
-    def batch_norm(self, value):
+    def batch_norm(self, value: bool):
         self._batch_norm = value
 
     @property
-    def up_sample(self):
+    def up_sample(self) -> Tuple[int, int]:
         return self._up_sample
 
     @up_sample.setter
-    def up_sample(self, value):
+    def up_sample(self, value: Tuple[int, int]):
         self._up_sample = value
 
     @property
-    def input_size(self):
+    def input_size(self) -> Tuple[int, int, int]:
         return self._input_size
 
     @input_size.setter
-    def input_size(self, value):
+    def input_size(self, value: Tuple[int, int, int]):
         self._input_size = value
 
     @property
-    def activation(self):
+    def activation(self) -> str:
         return self._activation
 
     @activation.setter
-    def activation(self, value):
+    def activation(self, value: str):
         self._activation = value
 
     @property
-    def padding(self):
+    def padding(self) -> str:
         return self._padding
 
     @padding.setter
-    def padding(self, value):
+    def padding(self, value: str):
         self._padding = value
 
     @property
-    def pool(self):
+    def pool(self) -> Tuple[int, int]:
         return self._pool
 
     @pool.setter
-    def pool(self, value):
+    def pool(self, value: Tuple[int, int]):
         self._pool = value
 
     @property
-    def l1_reg(self):
+    def l1_reg(self) -> float:
         return self._l1_reg
 
     @l1_reg.setter
-    def l1_reg(self, value):
+    def l1_reg(self, value: float):
         self._l1_reg = value
 
     @property
-    def l2_reg(self):
+    def l2_reg(self) -> float:
         return self._l2_reg
 
     @l2_reg.setter
-    def l2_reg(self, value):
+    def l2_reg(self, value: float):
         self._l2_reg = value
 
     @property
-    def l1_l2_reg(self):
+    def l1_l2_reg(self) -> float:
         return self._l1_l2_reg
 
     @l1_l2_reg.setter
-    def l1_l2_reg(self, value):
+    def l1_l2_reg(self, value: float):
         self._l1_l2_reg = value
 
-    def _parse_params(self, params):
+    def _parse_params(self, params: dict):
         """
         Read a dictionary of parameters and store them in the
         class attributes.
 
         Args:
-            params (dict): A dictionary of attributes. Read the class
+            params: A dictionary of attributes. Read the class
                 docstrings to know more.
         """
         if "l1_reg" in params:
