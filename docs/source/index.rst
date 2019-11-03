@@ -10,8 +10,8 @@ Welcome to segmed's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-   modules
    examples
+   modules
 
 Indices and tables
 ==================
