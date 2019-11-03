@@ -1,22 +1,23 @@
 from segmed.models import unet
 from segmed.metrics import metrics as mts
 import tensorflow as tf
+from typing import Optional, Tuple
 
 
 def train_segmed(
-    model,
-    img_path,
-    mask_path,
-    batch_size=16,
-    epochs=25,
-    steps_per_epoch=3125,
-    val_split=0.2,
-    optimizer=tf.keras.optimizers.Adam(),
-    monitor="val_jaccard_index",
-    model_file="unet_simple.h5",
-    seed=1,
-    show=False,
-):
+    model: tf.keras.Model,
+    img_path: str,
+    mask_path: str,
+    batch_size: Optional[int] = 16,
+    epochs: Optional[int] = 25,
+    steps_per_epoch: Optional[int] = 3125,
+    val_split: Optional[float] = 0.2,
+    optimizer: Optional[tf.keras.optimizers] = tf.keras.optimizers.Adam(),
+    monitor: Optional[str] = "val_jaccard_index",
+    model_file: Optional[str] = "unet_simple.h5",
+    seed: Optional[int] = 1,
+    show: Optional[bool]=False,
+) -> tf.keras.History:
 
     """A simple utility function for training the any `segmed` model.
 

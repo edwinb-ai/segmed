@@ -1,4 +1,4 @@
-from tensorflow.keras.regularizers import L1L2
+import tensorflow as tf
 from .unet import simple_unet, custom_unet
 from .segmodel import SegmentationModel
 from .multiresunet import MultiResUnet
@@ -72,7 +72,9 @@ class Unet(SegmentationModel):
             "kernel_size": self._kernel_size,
             "activation": self._activation,
             "padding": self._padding,
-            "kernel_regularizer": L1L2(l1=self._l1_reg, l2=self._l2_reg),
+            "kernel_regularizer": tf.keras.regularizers.L1L2(
+                l1=self._l1_reg, l2=self._l2_reg
+            ),
         }
         # Add additional Keras parameters if passed
         if self._from_keras is not None:
