@@ -14,15 +14,15 @@ def conv2d(
     2D Convolutional layers with Batch Normalization
     
     Args:
-        x: Keras layer, the input to the feature map
-        filters: Int representing the number of filters to use
-        shape: Tuple with two integer values (number of rows, number of columns)
-        padding: String that determines the padding mode
-        strides: Tuple of two integer values that represent the strides
-        activation: String that defines the activation function
+        x: The input to the feature map.
+        filters: The number of filters to use.
+        shape: Information about the images, i.e. (number of rows, number of columns).
+        padding: The type of padding to use per convolution layer.
+        strides: Strides to use when processing the inputs.
+        activation: Activation function to use.
     
     Returns:
-        x: A Keras layer
+        x: The layer with the convolutions and batch normalization.
     """
 
     x = K.layers.Conv2D(
@@ -41,15 +41,15 @@ def conv2d(
 def MultiResBlock(u_val: int, input: K.Layer, alpha: Optional[float] = 1.67) -> K.Layer:
     """MultiRes Block, as defined in the paper.
 
-    Alpha is a constant value that controls
-    the number of parameters in the block.
+    Alpha is a constant value that controls the number of parameters in the block.
     
     Args:
-        U: Integer value for the number of filters.
-        input: A Keras layer.
+        u_val: Calculate the weight it needs per convolution layer.
+        alpha: Value to control the number of filters in the convolution layers.
+        input: The previous layer from the block.
     
     Returns:
-        out: A Keras layer.
+        out: The complete residual block built.
     """
     # Calculate the value of W as defined in the paper.
     weight = u_val * alpha
@@ -92,12 +92,12 @@ def ResPath(filters: int, input: K.Layer, length: Optional[int] = None):
     argument.
     
     Args:
-        filters: Integer value corresponding to the number of filters.
-        length: Integer value with the length of the path, number of maps.
-        input: Keras layer.
+        filters: The number of filters.
+        length: The length of the path, number of maps.
+        input: Previous layer to form the path.
     
     Returns:
-        out: Keras layer.
+        out: The complete residual path, with the specified parameters.
     """
     # First residual connection
     residual = conv2d(input, filters, (1, 1), activation=None, padding="same")
@@ -136,11 +136,11 @@ def MultiResUnet(input_size: Tuple[int, int, int] = (256, 256, 3)) -> K.Model:
     semantic gaps and to obtain better characteristics from the images and maps.
     
     Args:
-        input_size: Tuple of three integers (height, width, number of channels) that
-            describe the input images.
+        input_size: Information from the images, i.e. (height, width, number of channels)
+            that describe the input images.
     
     Returns:
-        model: A Keras model instance.
+        model: A Model with the full MultiResUNet implementation.
     """
 
     inputs = K.layers.Input((input_size))
