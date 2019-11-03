@@ -1,21 +1,21 @@
 from tensorflow import keras as K
 from warnings import warn
+from typing import Optional, Tuple
 
 
-def simple_unet(input_size, conv):
+def simple_unet(input_size: Tuple[int, int, int], conv: dict) -> K.Model:
     """
     Implementation of the U-Net model, using Concatenation instead of
     crop and place for the semantic gap.
     
     Args:
-        input_size (Tuple[int, int, int]): (height, width, channels), i.e.
-        The information of the image.
-        Must always be a multiple of 32, e.g. 256, 512.
-        conv (dict): Keyword parameters from the Keras specification. This dictionary
+        input_size: (height, width, channels), i.e. The information of the image.
+            Must always be a multiple of 32, e.g. 256, 512.
+        conv: Keyword parameters from the Keras specification. This dictionary
             will affect ALL convolutional layers in the network.
 
     Returns:
-        model: A tf.keras.Model instance.
+        model: Model with a U-Net-like architecture.
     """
 
     # Take in the inputs
@@ -92,19 +92,24 @@ def simple_unet(input_size, conv):
     return model
 
 
-def _encoder(x, conv, dropout=None, batch_norm=False):
+def _encoder(
+    x: K.Layer,
+    conv: dict,
+    dropout: Optional[float] = None,
+    batch_norm: Optional[bool] = False,
+) -> K.Layer:
     """
     Create an encoder block with dropout, batch normalization, kernel regularatization and
     more. It basically supports every possible parameter from the Keras API.
 
     Args:
-        x (keras.Layer): Layer to build upon.
-        conv (dict): All possible arguments from the Keras specification.
-        dropout (float): Value for the dropout layer, between 0 and 1.
-        batc_norm (bool): Whether to add batch normalization or not.
+        x: Layer to build upon.
+        conv: All possible arguments from the Keras specification.
+        dropout: Value for the dropout layer, between 0 and 1.
+        batc_norm: Whether to add batch normalization or not.
 
     Returns:
-        some_layer (keras.Layer): Output layer with convolutions and additional
+        some_layer: Output layer with convolutions and additional
             parameters and layers.
     """
     if batch_norm:
@@ -129,7 +134,9 @@ def _encoder(x, conv, dropout=None, batch_norm=False):
     return some_layer
 
 
-def _concatenate_and_upsample(prev_layer, cat_layer, upsample, conv):
+def _concatenate_and_upsample(
+    prev_layer: K.Layer, cat_layer: K.Layer, upsample: Tuple[int, int], conv: dict
+) -> K.Layer:
     """
     Decoder blocks for the Unet where upsampling and concatenation take part.
 
@@ -156,24 +163,28 @@ def _concatenate_and_upsample(prev_layer, cat_layer, upsample, conv):
 
 
 def custom_unet(
-    input_size, conv, pool=None, dropout=None, batch_norm=None, up_sample=None
-):
+    input_size: Tuple[int, int, int],
+    conv: dict,
+    pool: Optional[Tuple[int, int]] = None,
+    dropout: Optional[float] = None,
+    batch_norm: Optional[bool] = None,
+    up_sample: Optional[Tuple[int, int]] = None,
+) -> K.Model:
     """
     Implementation of the U-Net model but with extreme flexibility to add new paramaters
     like dropout, batch normalization, kernel regularizers and so on.
     
     Args:
-        input_size (Tuple[int, int, int]): (height, width, channels), i.e.
-        The information of the image.
-        Must always be a multiple of 32, e.g. 256, 512.
-        conv (dict): Keyword parameters from the Keras specification. This dictionary
+        input_size: (height, width, channels), i.e. The information of the image.
+            Must always be a multiple of 32, e.g. 256, 512.
+        conv: Keyword parameters from the Keras specification. This dictionary
             will affect ALL convolutional layers in the network.
-        pool (Tuple[int, int]): Pooling windows
-        dropout (float): Value for the dropout layer, between 0 and 1.
-        batch_norm (bool): Add batch normalization to every encoder block.
-        up_sample (Tuple[int, int]): Upsampling factor for rows and columns.
+        pool: Size of the pooling windows.
+        dropout: Value for the dropout layer, between 0 and 1.
+        batch_norm: Add batch normalization to every encoder block.
+        up_sample: Upsampling factor for rows and columns.
     Returns:
-        model: A tf.keras.Model instance.
+        model: A custom version of a U-Net like architecture.
     """
     inputs = K.layers.Input(input_size)
     encoder_block = inputs
