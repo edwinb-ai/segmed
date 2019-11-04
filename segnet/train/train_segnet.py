@@ -18,6 +18,7 @@ def train_segnet(
     model_file="unet_simple.h5",
     seed=1,
     show=False,
+    **kw
 ):
 
     """ A simple utility function for training the U-Net.
