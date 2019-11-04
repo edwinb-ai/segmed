@@ -3,8 +3,8 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-segmed: Making medical semantic segmentation easier
-====================================================
+``segmed``: Making medical semantic segmentation easier
+========================================================
 
 .. include :: introduction.rst
 
@@ -13,7 +13,7 @@ segmed: Making medical semantic segmentation easier
    :maxdepth: 2
    :caption: Contents:
 
-   examples
+   user
    modules
 
 Indices and tables
