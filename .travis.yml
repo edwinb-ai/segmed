@@ -14,4 +14,4 @@ install:
   - conda activate segmed
 
 script:
-  nox
+  nox -k "not docs"
