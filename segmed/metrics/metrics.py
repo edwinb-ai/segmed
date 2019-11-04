@@ -5,7 +5,7 @@ from typing import Union, Optional
 def jaccard_index(y_true: tf.Tensor, y_pred: tf.Tensor) -> tf.Tensor:
     """Evaluate the Jaccard index.
 
-    Assuming that `y_true` and `y_pred` are images,
+    Assuming that ``y_true`` and ``y_pred`` are images,
     the Jaccard index evaluates segmentation maps and its effectiveness.
     If the value is one, the segmentation map predicted is exact.
 
@@ -14,7 +14,7 @@ def jaccard_index(y_true: tf.Tensor, y_pred: tf.Tensor) -> tf.Tensor:
         y_pred: The predicted value.
 
     Returns:
-        result: Scalar that determines the intersection over union value.
+        Scalar that determines the intersection over union value.
     """
     y_true_f = tf.reshape(y_true, shape=[-1])
     y_pred_f = tf.reshape(y_pred, shape=[-1])
@@ -32,16 +32,18 @@ def dice_coef(
 ) -> tf.Tensor:
     """Evaluate the Sorensen-Dice coefficient.
 
-    Assuming that `y_true` and `y_pred` are images.
+    Assuming that ``y_true`` and ``y_pred`` are images.
     The Sorensen-Dice coefficient is a close relative of the Jaccard index, and it should
     almost always be logged simultaneously.
 
     Args:
         y_true: The ground truth.
         y_pred: The predicted value.
+        smooth: A constant to smoothen the function, prevents division by    
+            zero.
 
     Returns:
-        result: Scalar that determines the segmentation error.
+        Tensor constant that determines the segmentation error.
     """
 
     y_true_f = tf.reshape(y_true, shape=[-1])
@@ -57,15 +59,15 @@ def dice_coef(
 def _static_binarization(x: tf.Tensor) -> tf.Tensor:
     """Take a TensorFlow Tensor object and statically binarize it.
     
-    This function makes the assumption that `x`
-     has values between 0 and 1. If the element value of `x` is >= 0.5,
+    This function makes the assumption that ``x``
+    has values between 0 and 1. If the element value of ``x`` is >= 0.5,
     then an integer 1 is assigned, otherwise, an integer 0 is assigned.
 
     Args:
-        x: Tensor to binarize
+        x: Tensor to binarize.
 
     Returns:
-        new_x: Binarized tensor
+        Binarized tensor.
     """
     new_x = tf.where(x >= 0.5, 1, 0)
     new_x = tf.cast(new_x, tf.float32)
@@ -88,13 +90,11 @@ def _up_dp_qp(x: tf.Tensor, y: tf.Tensor) -> Union[tf.Tensor, tf.Tensor, tf.Tens
     a faster computation of the values.
 
     Args:
-        x: The ground truth
-        y: The predicted value
+        x: The ground truth.
+        y: The predicted value.
 
     Returns:
-        u_p: the calculated value for Up
-        d_p: the calculated value for Dp
-        q_p: the calculated value for Qp
+        The calculated value for Up, Dp and Qp.
     """
     y_t = tf.reshape(x, shape=[-1])
     y_p = tf.reshape(y, shape=[-1])
@@ -110,7 +110,7 @@ def _up_dp_qp(x: tf.Tensor, y: tf.Tensor) -> Union[tf.Tensor, tf.Tensor, tf.Tens
 def o_rate(y_true: tf.Tensor, y_pred: tf.Tensor) -> tf.Tensor:
     """Calculate the over segmentation error.
     
-    Assuming `y_true` and `y_pred` are images, this function calculates
+    Assuming ``y_true`` and ``y_pred`` are images, this function calculates
     the overall segmentation error, OR, defined as:
 
     Args:
@@ -118,7 +118,7 @@ def o_rate(y_true: tf.Tensor, y_pred: tf.Tensor) -> tf.Tensor:
         y_pred: with the predicted value.
 
     Returns:
-        result: Constant Tensor with the OR value.
+        Constant Tensor with the OR value.
     """
     u_p, d_p, q_p = _up_dp_qp(y_true, y_pred)
     # Add a smoothing factor of 1.0 to prevent division by zero
@@ -133,9 +133,9 @@ def o_rate(y_true: tf.Tensor, y_pred: tf.Tensor) -> tf.Tensor:
 def u_rate(y_true: tf.Tensor, y_pred: tf.Tensor) -> tf.Tensor:
     """Calculate the under segmentation error.
     
-    Assuming `y_true` and `y_pred` are images, this function calculates
+    Assuming ``y_true`` and ``y_pred`` are images, this function calculates
     the overall segmentation error, UR, defined as:
-
+    
     UR = Up / (Up + Dp)
 
     Args:
@@ -143,7 +143,7 @@ def u_rate(y_true: tf.Tensor, y_pred: tf.Tensor) -> tf.Tensor:
         y_pred: with the predicted value.
 
     Returns:
-        result: Constant Tensor with the UR value.
+        Constant Tensor with the UR value.
     """
     u_p, d_p, _ = _up_dp_qp(y_true, y_pred)
     # Add a smoothing factor of 1.0 to prevent division by zero
@@ -158,7 +158,7 @@ def u_rate(y_true: tf.Tensor, y_pred: tf.Tensor) -> tf.Tensor:
 def err_rate(y_true: tf.Tensor, y_pred: tf.Tensor) -> tf.Tensor:
     """Calculate the overall segmentation error.
     
-    Assuming `y_true` and `y_pred` are images, this function calculates
+    Assuming ``y_true`` and ``y_pred`` are images, this function calculates
     the overall segmentation error, ER, defined as:
 
     ER = (Qp + Up) / Dp
@@ -168,7 +168,7 @@ def err_rate(y_true: tf.Tensor, y_pred: tf.Tensor) -> tf.Tensor:
         y_pred: with the predicted value.
 
     Returns:
-        result: Constant Tensor with the ER value.
+        Constant Tensor with the ER value.
     """
     u_p, d_p, q_p = _up_dp_qp(y_true, y_pred)
     # Add a smoothing factor of 1.0 to prevent division by zero

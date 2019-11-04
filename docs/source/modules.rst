@@ -1,5 +1,5 @@
-API Reference
-==============
+segmed
+======
 
 .. toctree::
    :maxdepth: 4
