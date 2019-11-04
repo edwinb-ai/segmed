@@ -1,8 +1,9 @@
-from keras.layers import Input, Conv2D, MaxPooling2D, Conv2DTranspose, concatenate, BatchNormalization, Activation, add
-from keras.models import Model, model_from_json
-from keras.optimizers import Adam
-from keras.layers.advanced_activations import ELU, LeakyReLU
-from keras.utils.vis_utils import plot_model
+
+from tensorflow.keras.layers import Input, Conv2D, MaxPooling2D, Conv2DTranspose, concatenate, BatchNormalization, Activation, add
+from tensorflow.keras.models import Model, model_from_json
+from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.layers import ELU, LeakyReLU
+#from tensorflow.keras.utils.vis_utils import plot_model
 
 
 
@@ -139,7 +140,7 @@ def ResPath(filters, length, inp):
     return out
 
 
-def MultiResUnet(height, width, n_channels):
+def MultiResUnet(input_shape=(256, 256, 3)):
     '''
     MultiResUNet
     
@@ -152,7 +153,7 @@ def MultiResUnet(height, width, n_channels):
         [keras model] -- MultiResUNet model
     '''
 
-
+    height, width, n_channels = input_shape
     inputs = Input((height, width, n_channels))
 
     mresblock1 = MultiResBlock(32, inputs)
@@ -201,10 +202,11 @@ def main():
 
     # Define the model
 
-    model = MultiResUnet(128, 128,3)
+    model = MultiResUnet((128, 128,3))
     print(model.summary())
 
 
 
 if __name__ == '__main__':
     main()
+
