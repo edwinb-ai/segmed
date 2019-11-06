@@ -6,13 +6,11 @@
 ``segmed``: Making medical semantic segmentation easier
 ========================================================
 
-.. include :: introduction.rst
-
-
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
+   introduction
    user
    modules
 
