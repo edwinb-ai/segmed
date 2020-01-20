@@ -1,5 +1,52 @@
 import tensorflow as tf
 
+def O_Rate(y_true,y_pred):
+    """
+        Abdiel's metric, no description
+    """
+    num_data = tf.cast(tf.shape(y_true), dtype=tf.float32)
+    y_t=tf.reshape(y_true,shape=[-1])
+    y_p=tf.reshape(y_pred,shape=[-1])
+    uno=tf.constant(1.0,dtype=tf.float32)
+    y_true_b=tf.round(y_t-0.1)
+    y_pred_b=tf.round(y_p-0.1)
+    Dp=tf.reduce_sum(y_true_b*y_pred_b)
+    Qp=tf.reduce_sum(y_true_b*(uno-y_pred_b))
+    Up=tf.reduce_sum(y_pred_b*(uno-y_true_b))
+    
+    return (Qp/(Up+Dp+0.0001))/num_data[0]
+
+#Estas primeras usan menos parametros pero ambas son equivalentes en tabla de verdad y  en resultados
+def U_Rate(y_true,y_pred):
+    """
+    """
+    num_data = tf.cast(tf.shape(y_true), dtype=tf.float32)
+    y_t=tf.reshape(y_true,shape=[-1])
+    y_p=tf.reshape(y_pred,shape=[-1])
+    uno=tf.constant(1.0,dtype=tf.float32)
+    y_true_b=tf.round(y_t-0.1)
+    y_pred_b=tf.round(y_p-0.1)
+    Dp=tf.reduce_sum(y_true_b*y_pred_b) 
+    Qp=tf.reduce_sum(y_true_b*(uno-y_pred_b))
+    Up=tf.reduce_sum(y_pred_b*(uno-y_true_b))
+
+    return (Up/(Up+Dp+0.0001))/num_data[0]
+
+def Err_rate(y_true,y_pred):
+    """
+    """
+    num_data = tf.cast(tf.shape(y_true), dtype=tf.float32)
+    y_t=tf.reshape(y_true,shape=[-1])
+    y_p=tf.reshape(y_pred,shape=[-1])
+    uno=tf.constant(1.0,dtype=tf.float32)
+    y_true_b=tf.round(y_t-0.1)
+    y_pred_b=tf.round(y_p-0.1)
+    Dp=tf.reduce_sum(y_true_b*y_pred_b)
+    Qp=tf.reduce_sum(y_true_b*(uno-y_pred_b))
+    Up=tf.reduce_sum(y_pred_b*(uno-y_true_b))
+    
+    return ((Qp+Up)/(Dp+0.0001))/num_data[0]
+
 
 def jaccard_index(y_true, y_pred):
     """
