@@ -67,6 +67,9 @@ def time_log(path_to_logfile: str = None) -> Callable:
             te = time()
             exec_time = te - ts
             json_cast = lambda x: x if is_jsonable(x) else str(x)
+            # maybe, it's a good idea, with unit test being made first,
+            # instead of just str(x),
+            # use: str(x).split("at")[0].replace("<", "").strip()
             data = {
                 "datetimeUTC": str(datetime.datetime.utcnow()),
                 "function": f.__name__,
