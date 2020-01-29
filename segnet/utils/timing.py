@@ -75,7 +75,7 @@ def time_log(path_to_logfile: str = None) -> Callable:
                 "function": f.__name__,
                 "args": [json_cast(arg) for arg in args],
                 "kwargs": {key:json_cast(kw[key]) for key in kw.keys()},
-                "time": exec_time
+                "execution time (s)": exec_time
             }
             with open(path_to_logfile, 'a') as log:
                 log.write(json.dumps(data)+'\n')
