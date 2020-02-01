@@ -87,7 +87,12 @@ class Segmed(object):
 
   def _get_gpu() -> List[Dict[str,Union[str,float,int]]]:
     """ Get a List of dictionaries, describing each one of the GPUs found, if any. """
-    gpus: List[GPUtil.GPUtil.GPU] = GPUtil.getGPUs()
+    
+    try:
+      gpus: List[GPUtil.GPUtil.GPU] = GPUtil.getGPUs()
+    except:
+      return [{}]
+    
     gpu_list: List[Dict[str,Union[str,float,int]]] = []
 
     if len(gpus) == 0:
