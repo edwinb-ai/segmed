@@ -348,7 +348,7 @@ class Segmed(object):
     self._data_gen_args: Dict[str,Any] = data_gen_args or Segmed.__data_gen_args
     self._hyper_params:  Dict[str,Any] = hyper_params  or Segmed.__hyper_params
 
-    # Crea the training generators with the defined transformations
+    # Create the training generators with the defined transformations
     self.__image_datagen = tf.keras.preprocessing.image.ImageDataGenerator(**self._data_gen_args)
     self.__mask_datagen  = tf.keras.preprocessing.image.ImageDataGenerator(**self._data_gen_args)
     
