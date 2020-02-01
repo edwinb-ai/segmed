@@ -453,7 +453,8 @@ class Segmed(object):
       compiling_kw: Dict[str,Any] = None,
       model_checkpoint_kw: Optional[Dict[str,Any]] = None,
       data_gen_args: Optional[Dict[str, Any]] = None,
-      hyper_params: Optional[Dict[str, Any]] =  None
+      hyper_params: Optional[Dict[str, Any]] =  None,
+      verbose: bool = True
   ) -> NoReturn:
     """ Train self._model, calling the following methods beforehand :
 
@@ -468,6 +469,10 @@ class Segmed(object):
         data_gen_args, defaults to Segmed.__data_gen_args
         hyper_params, defaults to Segmed.__hyper_params 
         model_checkpoint_kw, defaults to Segmed.__model_checkpoint_kw
+        verbose, defaults to True
+                 this activates printing 
+                 some extra info during 
+                 the training process.
 
     Calls a decorated version of `self._model.fit_generator` which 
     will create a log of the parameters passed to it and the execution time.
